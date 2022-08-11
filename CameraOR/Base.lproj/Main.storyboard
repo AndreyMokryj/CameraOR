@@ -16,8 +16,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="kO0-yN-wFm" userLabel="Camera Button">
+                                <rect key="frame" x="137" y="697" width="100" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="50"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didTapCameraButton" destination="BYZ-38-t0r" eventType="touchDown" id="1AK-XB-oRB"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UBN-zG-aEt">
                                 <rect key="frame" x="30" y="791" width="354" height="51"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="51" id="okH-ui-ojI"/>
                                 </constraints>
@@ -27,12 +42,14 @@
                                     <action selector="didTapButton" destination="BYZ-38-t0r" eventType="touchUpInside" id="4CU-qp-am1"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4Sv-Xv-Vdz">
-                                <rect key="frame" x="20" y="64" width="374" height="707"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Sv-Xv-Vdz">
+                                <rect key="frame" x="19" y="84" width="374" height="707"/>
+                                <gestureRecognizers/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="UBN-zG-aEt" secondAttribute="trailing" constant="30" id="7as-cr-xpQ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="4Sv-Xv-Vdz" secondAttribute="trailing" constant="20" id="F5I-uI-M24"/>
@@ -45,13 +62,14 @@
                     </view>
                     <connections>
                         <outlet property="button" destination="UBN-zG-aEt" id="hoA-Ys-ssc"/>
+                        <outlet property="cameraButton" destination="kO0-yN-wFm" id="GXU-Ex-ozL"/>
                         <outlet property="imageView" destination="4Sv-Xv-Vdz" id="ycE-bW-OZF"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="qyu-D6-Ppo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="20" y="70"/>
+            <point key="canvasLocation" x="18.840579710144929" y="69.642857142857139"/>
         </scene>
     </scenes>
     <resources>

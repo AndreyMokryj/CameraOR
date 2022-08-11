@@ -12,26 +12,39 @@ import Vision
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var button: UIButton!
-    
+    @IBOutlet var cameraButton: UIButton!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         button.backgroundColor = .systemBlue
         button.setTitle("Open camera", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        
+        cameraButton.backgroundColor = .white
+        cameraButton.setTitle("", for: .normal)
     }
 
     @IBAction func didTapButton(){
         setupAVCapture()
     }
     
+    @IBAction func didTapCameraButton(){
+        session.stopRunning()
+
+        previewLayer.removeFromSuperlayer()
+        session.removeInput(deviceInput)
+        session.removeOutput(videoDataOutput)
+    }
+    
     var bufferSize: CGSize = .zero
     var rootLayer: CALayer! = nil
     
     @IBOutlet weak private var previewView: UIView!
-    private let session = AVCaptureSession()
+    private var session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
     private let videoDataOutput = AVCaptureVideoDataOutput()
+    private var deviceInput: AVCaptureDeviceInput!
     
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
     
@@ -45,8 +58,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     func setupAVCapture() {
-        var deviceInput: AVCaptureDeviceInput!
-        
         // Select a video device, make an input
         let videoDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first
         do {
@@ -99,12 +110,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func startCaptureSession() {
         session.startRunning()
-    }
-    
-    // Clean up capture setup
-    func teardownAVCapture() {
-        previewLayer.removeFromSuperlayer()
-        previewLayer = nil
     }
     
     func captureOutput(_ captureOutput: AVCaptureOutput, didDrop didDropSampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {

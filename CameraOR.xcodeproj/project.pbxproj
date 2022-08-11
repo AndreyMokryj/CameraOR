@@ -63,12 +63,12 @@
 				49947DB528A4089100518099 /* AppDelegate.swift */,
 				49947DB728A4089100518099 /* SceneDelegate.swift */,
 				49947DB928A4089100518099 /* ViewController.swift */,
+				49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */,
 				49947DCB28A502AD00518099 /* ObjectDetector.mlmodel */,
 				49947DBB28A4089100518099 /* Main.storyboard */,
 				49947DBE28A4089300518099 /* Assets.xcassets */,
 				49947DC028A4089300518099 /* LaunchScreen.storyboard */,
 				49947DC328A4089300518099 /* Info.plist */,
-				49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */,
 			);
 			path = CameraOR;
 			sourceTree = "<group>";

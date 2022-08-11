@@ -91,6 +91,9 @@ class ObjectRecognitionViewController: ViewController {
         
         // start the capture
         startCaptureSession()
+        
+        view.addSubview(cameraButton)
+        view.bringSubviewToFront(cameraButton)
     }
     
     func setupLayers() {
@@ -101,6 +104,9 @@ class ObjectRecognitionViewController: ViewController {
                                          width: bufferSize.width,
                                          height: bufferSize.height)
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
+        
+//        detectionOverlay.backgroundColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
+        
         rootLayer.addSublayer(detectionOverlay)
     }
     
@@ -155,4 +161,11 @@ class ObjectRecognitionViewController: ViewController {
         return shapeLayer
     }
     
+    // Clean up capture setup
+    override func didTapCameraButton(){
+        super.didTapCameraButton()
+        
+        detectionOverlay.removeFromSuperlayer()
+        cameraButton.removeFromSuperview()
+    }
 }
