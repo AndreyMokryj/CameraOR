@@ -35,6 +35,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         previewLayer.removeFromSuperlayer()
         session.removeInput(deviceInput)
         session.removeOutput(videoDataOutput)
+        session.removeOutput(photoOutput)
     }
     
     var bufferSize: CGSize = .zero
@@ -44,7 +45,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     private var session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
     private let videoDataOutput = AVCaptureVideoDataOutput()
-    private var deviceInput: AVCaptureDeviceInput!
+    let photoOutput = AVCapturePhotoOutput()
+    var deviceInput: AVCaptureDeviceInput!
     
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
     
@@ -85,6 +87,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
         } else {
             print("Could not add video data output to the session")
+            session.commitConfiguration()
+            return
+        }
+        
+        if session.canAddOutput(photoOutput) {
+            session.addOutput(photoOutput)
+            // Add a video data output
+            photoOutput.isHighResolutionCaptureEnabled = true
+            photoOutput.isLivePhotoCaptureEnabled = photoOutput.isLivePhotoCaptureSupported
+        } else {
+            print("Could not add photo output to the session")
             session.commitConfiguration()
             return
         }
@@ -148,5 +161,34 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             return
         }
         imageView.image = image
+    }
+}
+
+extension ViewController: AVCapturePhotoCaptureDelegate {
+
+    func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+
+        if let error = error {
+            print("Error capturing photo: \(error)")
+        } else {
+            if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
+
+                if let image = UIImage(data: dataImage) {
+                    self.imageView.image = image
+                }
+            }
+        }
+
+    }
+
+    @available(iOS 11.0, *)
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+
+        guard let data = photo.fileDataRepresentation(),
+              let image =  UIImage(data: data)  else {
+                return
+        }
+
+        self.imageView.image = image
     }
 }

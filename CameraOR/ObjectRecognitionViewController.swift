@@ -10,7 +10,6 @@ import AVFoundation
 import Vision
 
 class ObjectRecognitionViewController: ViewController {
-    
     private var detectionOverlay: CALayer! = nil
     
     // Vision parts
@@ -162,10 +161,22 @@ class ObjectRecognitionViewController: ViewController {
     }
     
     // Clean up capture setup
+
     override func didTapCameraButton(){
-        super.didTapCameraButton()
-        
-        detectionOverlay.removeFromSuperlayer()
         cameraButton.removeFromSuperview()
+        detectionOverlay.removeFromSuperlayer()
+        
+        let photoSettings = AVCapturePhotoSettings()
+        photoSettings.isHighResolutionPhotoEnabled = true
+        if self.deviceInput.device.isFlashAvailable {
+            photoSettings.flashMode = .auto
+        }
+
+        if let firstAvailablePreviewPhotoPixelFormatTypes = photoSettings.availablePreviewPhotoPixelFormatTypes.first {
+            photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: firstAvailablePreviewPhotoPixelFormatTypes]
+        }
+
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        super.didTapCameraButton()
     }
 }
