@@ -13,6 +13,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var button: UIButton!
     @IBOutlet var cameraButton: UIButton!
+    
+    var foundBounds: CGRect? = nil
+    var coef: Double = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -162,10 +165,28 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         }
         imageView.image = image
     }
+    
+    func cropToBounds(image: UIImage, rect: CGRect?) -> UIImage
+    {
+        if (rect != nil) {
+            let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+            
+            print("rect.minX = \(rect!.minX)\nrect.minY = \(rect!.minY)\nrect.width = \(rect!.width)\nrect.height = \(rect!.height)\n")
+            print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
+            print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
+
+            let _coef = 6.5
+            let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _coef, width: rect!.width * _coef, height: rect!.height * _coef)
+            let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
+
+            let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
+            return _image
+        }
+        return image
+    }
 }
 
 extension ViewController: AVCapturePhotoCaptureDelegate {
-
     func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
 
         if let error = error {
@@ -174,21 +195,19 @@ extension ViewController: AVCapturePhotoCaptureDelegate {
             if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
 
                 if let image = UIImage(data: dataImage) {
-                    self.imageView.image = image
+                    self.imageView.image = cropToBounds(image: image, rect: foundBounds)
                 }
             }
         }
-
     }
 
     @available(iOS 11.0, *)
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-
         guard let data = photo.fileDataRepresentation(),
               let image =  UIImage(data: data)  else {
                 return
         }
 
-        self.imageView.image = image
+        self.imageView.image = cropToBounds(image: image, rect: foundBounds)
     }
 }

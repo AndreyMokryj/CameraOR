@@ -44,6 +44,7 @@ class ObjectRecognitionViewController: ViewController {
     func drawVisionRequestResults(_ results: [Any]) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+        foundBounds = nil
         detectionOverlay.sublayers = nil // remove all the old recognized objects
         for observation in results where observation is VNRecognizedObjectObservation {
             guard let objectObservation = observation as? VNRecognizedObjectObservation else {
@@ -52,14 +53,19 @@ class ObjectRecognitionViewController: ViewController {
             // Select only the label with the highest confidence.
             let topLabelObservation = objectObservation.labels[0]
             let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
-            
             let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
-            
             let textLayer = self.createTextSubLayerInBounds(objectBounds,
                                                             identifier: topLabelObservation.identifier,
                                                             confidence: topLabelObservation.confidence)
             shapeLayer.addSublayer(textLayer)
             detectionOverlay.addSublayer(shapeLayer)
+            
+            foundBounds = CGRect(
+                x: shapeLayer.frame.minX,
+                y: shapeLayer.frame.minY,
+                width: shapeLayer.frame.width,
+                height: shapeLayer.frame.height
+            )
         }
         self.updateLayerGeometry()
         CATransaction.commit()
@@ -103,9 +109,6 @@ class ObjectRecognitionViewController: ViewController {
                                          width: bufferSize.width,
                                          height: bufferSize.height)
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
-        
-//        detectionOverlay.backgroundColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
-        
         rootLayer.addSublayer(detectionOverlay)
     }
     
@@ -120,6 +123,7 @@ class ObjectRecognitionViewController: ViewController {
         if scale.isInfinite {
             scale = 1.0
         }
+        
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
         
@@ -129,7 +133,6 @@ class ObjectRecognitionViewController: ViewController {
         detectionOverlay.position = CGPoint(x: bounds.midX, y: bounds.midY)
         
         CATransaction.commit()
-        
     }
     
     func createTextSubLayerInBounds(_ bounds: CGRect, identifier: String, confidence: VNConfidence) -> CATextLayer {
@@ -157,15 +160,13 @@ class ObjectRecognitionViewController: ViewController {
         shapeLayer.name = "Found Object"
         shapeLayer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 0.2, 0.4])
         shapeLayer.cornerRadius = 7
+
         return shapeLayer
     }
     
     // Clean up capture setup
 
-    override func didTapCameraButton(){
-        cameraButton.removeFromSuperview()
-        detectionOverlay.removeFromSuperlayer()
-        
+    override func didTapCameraButton(){        
         let photoSettings = AVCapturePhotoSettings()
         photoSettings.isHighResolutionPhotoEnabled = true
         if self.deviceInput.device.isFlashAvailable {
@@ -175,8 +176,12 @@ class ObjectRecognitionViewController: ViewController {
         if let firstAvailablePreviewPhotoPixelFormatTypes = photoSettings.availablePreviewPhotoPixelFormatTypes.first {
             photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: firstAvailablePreviewPhotoPixelFormatTypes]
         }
-
+        
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        
+        cameraButton.removeFromSuperview()
+        detectionOverlay.removeFromSuperlayer()
+        
         super.didTapCameraButton()
     }
 }
