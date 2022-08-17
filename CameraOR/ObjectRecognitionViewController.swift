@@ -53,18 +53,15 @@ class ObjectRecognitionViewController: ViewController {
             // Select only the label with the highest confidence.
             let topLabelObservation = objectObservation.labels[0]
             let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
-            let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
-            let textLayer = self.createTextSubLayerInBounds(objectBounds,
-                                                            identifier: topLabelObservation.identifier,
-                                                            confidence: topLabelObservation.confidence)
-            shapeLayer.addSublayer(textLayer)
-            detectionOverlay.addSublayer(shapeLayer)
+            
+            let dotsLayer = self.createDotsLayerWithBounds(objectBounds)
+            detectionOverlay.addSublayer(dotsLayer)
             
             foundBounds = CGRect(
-                x: shapeLayer.frame.minX,
-                y: shapeLayer.frame.minY,
-                width: shapeLayer.frame.width,
-                height: shapeLayer.frame.height
+                x: dotsLayer.frame.minX,
+                y: dotsLayer.frame.minY,
+                width: dotsLayer.frame.width,
+                height: dotsLayer.frame.height
             )
         }
         self.updateLayerGeometry()
@@ -160,6 +157,41 @@ class ObjectRecognitionViewController: ViewController {
         shapeLayer.name = "Found Object"
         shapeLayer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 0.2, 0.4])
         shapeLayer.cornerRadius = 7
+
+        return shapeLayer
+    }
+    
+    func createDotsLayerWithBounds(_ bounds: CGRect) -> CALayer {
+        let shapeLayer = CALayer()
+        shapeLayer.bounds = bounds
+        shapeLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
+        shapeLayer.name = "Found Object"
+//        shapeLayer.backgroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 0.2, 0.4])
+//        shapeLayer.cornerRadius = 7
+        
+        var _dotPath = UIBezierPath(ovalIn: CGRect(x: bounds.minX, y: bounds.minY, width: 10, height: 10))
+        var _layer = CAShapeLayer()
+        _layer.path = _dotPath.cgPath
+        _layer.fillColor = UIColor.blue.cgColor
+        shapeLayer.addSublayer(_layer)
+        
+        _dotPath = UIBezierPath(ovalIn: CGRect(x: bounds.minX, y: bounds.maxY, width: 10, height: 10))
+        _layer = CAShapeLayer()
+        _layer.path = _dotPath.cgPath
+        _layer.fillColor = UIColor.blue.cgColor
+        shapeLayer.addSublayer(_layer)
+        
+        _dotPath = UIBezierPath(ovalIn: CGRect(x: bounds.maxX, y: bounds.minY, width: 10, height: 10))
+        _layer = CAShapeLayer()
+        _layer.path = _dotPath.cgPath
+        _layer.fillColor = UIColor.blue.cgColor
+        shapeLayer.addSublayer(_layer)
+        
+        _dotPath = UIBezierPath(ovalIn: CGRect(x: bounds.maxX, y: bounds.maxY, width: 10, height: 10))
+        _layer = CAShapeLayer()
+        _layer.path = _dotPath.cgPath
+        _layer.fillColor = UIColor.blue.cgColor
+        shapeLayer.addSublayer(_layer)
 
         return shapeLayer
     }
