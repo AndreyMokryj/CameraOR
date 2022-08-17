@@ -13,6 +13,8 @@
 		49947DBD28A4089100518099 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49947DBB28A4089100518099 /* Main.storyboard */; };
 		49947DBF28A4089300518099 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49947DBE28A4089300518099 /* Assets.xcassets */; };
 		49947DC228A4089300518099 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49947DC028A4089300518099 /* LaunchScreen.storyboard */; };
+		49947DCA28A4F28A00518099 /* ObjectRecognitionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */; };
+		49947DCC28A502AD00518099 /* ObjectDetector.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 49947DCB28A502AD00518099 /* ObjectDetector.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		49947DBE28A4089300518099 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49947DC128A4089300518099 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49947DC328A4089300518099 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRecognitionViewController.swift; sourceTree = "<group>"; };
+		49947DCB28A502AD00518099 /* ObjectDetector.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ObjectDetector.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,8 @@
 				49947DB528A4089100518099 /* AppDelegate.swift */,
 				49947DB728A4089100518099 /* SceneDelegate.swift */,
 				49947DB928A4089100518099 /* ViewController.swift */,
+				49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */,
+				49947DCB28A502AD00518099 /* ObjectDetector.mlmodel */,
 				49947DBB28A4089100518099 /* Main.storyboard */,
 				49947DBE28A4089300518099 /* Assets.xcassets */,
 				49947DC028A4089300518099 /* LaunchScreen.storyboard */,
@@ -141,6 +147,8 @@
 				49947DBA28A4089100518099 /* ViewController.swift in Sources */,
 				49947DB628A4089100518099 /* AppDelegate.swift in Sources */,
 				49947DB828A4089100518099 /* SceneDelegate.swift in Sources */,
+				49947DCA28A4F28A00518099 /* ObjectRecognitionViewController.swift in Sources */,
+				49947DCC28A502AD00518099 /* ObjectDetector.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
