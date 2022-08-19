@@ -57,28 +57,12 @@ class ObjectRecognitionViewController: ViewController {
             let dotsLayer = self.createDotsLayerWithBounds(objectBounds)
             detectionOverlay.addSublayer(dotsLayer)
             
-//            print("dotsLayer.frame.minX = \(dotsLayer.frame.minX)\ndotsLayer.frame.minY = \(dotsLayer.frame.minY)\n")
-//            print("dotsLayer.frame.midX = \(dotsLayer.frame.midX)\ndotsLayer.frame.midY = \(dotsLayer.frame.midY)\n")
-
-//            foundBounds = CGRect(
-//                x: dotsLayer.frame.minX,
-//                y: dotsLayer.frame.minY,
-//                width: dotsLayer.frame.width,
-//                height: dotsLayer.frame.height
-//            )
-//            foundBounds = foundBounds!.offsetBy(dx: foundBounds!.maxX - detectionOverlay.frame.width, dy: 0)
             foundBounds = CGRect(
                 x: dotsLayer.frame.minX,
-                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.8,
+                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.7, // Move
                 width: dotsLayer.frame.width,
                 height: dotsLayer.frame.height
             )
-//            foundBounds = CGRect(
-//                x: dotsLayer.frame.minX,
-//                y: detectionOverlay.frame.maxY / 2.0 - dotsLayer.frame.maxY,
-//                width: dotsLayer.frame.width,
-//                height: dotsLayer.frame.height
-//            )
         }
         self.updateLayerGeometry()
         CATransaction.commit()
@@ -142,7 +126,6 @@ class ObjectRecognitionViewController: ViewController {
         
         // rotate the layer into screen orientation and scale and mirror
         detectionOverlay.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat(.pi / 2.0)).scaledBy(x: scale, y: -scale))
-//        detectionOverlay.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat(0.0 / 2.0)).scaledBy(x: scale, y: -scale))
         // center the layer
         detectionOverlay.position = CGPoint(x: bounds.midX, y: bounds.midY)
         
