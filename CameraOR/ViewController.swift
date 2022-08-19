@@ -176,7 +176,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
 
             let _coef = 6.5
-            let _ycoef = 2.1
+            let _ycoef = 4.1
 //            let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _coef, width: rect!.width * _coef, height: rect!.height * _coef)
             let _rect = CGRect(x: rect!.minX * _coef, y: (rect!.minY) * _ycoef, width: rect!.width * _coef, height: rect!.height * _coef)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!

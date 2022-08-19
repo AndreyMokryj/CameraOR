@@ -59,7 +59,6 @@ class ObjectRecognitionViewController: ViewController {
             
 //            print("dotsLayer.frame.minX = \(dotsLayer.frame.minX)\ndotsLayer.frame.minY = \(dotsLayer.frame.minY)\n")
 //            print("dotsLayer.frame.midX = \(dotsLayer.frame.midX)\ndotsLayer.frame.midY = \(dotsLayer.frame.midY)\n")
-            print("detectionOverlay.frame.height = \(detectionOverlay.frame.height)\ndetectionOverlay.frame.width = \(detectionOverlay.frame.width)\n")
 
 //            foundBounds = CGRect(
 //                x: dotsLayer.frame.minX,
@@ -68,20 +67,18 @@ class ObjectRecognitionViewController: ViewController {
 //                height: dotsLayer.frame.height
 //            )
 //            foundBounds = foundBounds!.offsetBy(dx: foundBounds!.maxX - detectionOverlay.frame.width, dy: 0)
-            foundBounds = CGRect.init(
+            foundBounds = CGRect(
                 x: dotsLayer.frame.minX,
-                y: detectionOverlay.frame.height - dotsLayer.frame.maxY,
+                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.8,
                 width: dotsLayer.frame.width,
                 height: dotsLayer.frame.height
             )
-//            foundBounds = CGRect.init(
-//                x: dotsLayer.frame.minY,
-//                y: dotsLayer.frame.minX,
+//            foundBounds = CGRect(
+//                x: dotsLayer.frame.minX,
+//                y: detectionOverlay.frame.maxY / 2.0 - dotsLayer.frame.maxY,
 //                width: dotsLayer.frame.width,
 //                height: dotsLayer.frame.height
 //            )
-//            foundBounds = dotsLayer.bounds
-//            foundBounds = foundBounds!.offsetBy(dx: -foundBounds!.maxX + detectionOverlay.frame.width, dy: -foundBounds!.maxX + detectionOverlay.frame.width)
         }
         self.updateLayerGeometry()
         CATransaction.commit()
