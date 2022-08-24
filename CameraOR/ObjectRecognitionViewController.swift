@@ -59,7 +59,7 @@ class ObjectRecognitionViewController: ViewController {
             
             foundBounds = CGRect(
                 x: dotsLayer.frame.minX,
-                y: dotsLayer.frame.minY,
+                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.7, // Move
                 width: dotsLayer.frame.width,
                 height: dotsLayer.frame.height
             )
