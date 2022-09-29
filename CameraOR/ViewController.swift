@@ -45,9 +45,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var rootLayer: CALayer! = nil
     
     @IBOutlet weak private var previewView: UIView!
-    private var session = AVCaptureSession()
+    var session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
-    private let videoDataOutput = AVCaptureVideoDataOutput()
+    let videoDataOutput = AVCaptureVideoDataOutput()
     let photoOutput = AVCapturePhotoOutput()
     var deviceInput: AVCaptureDeviceInput!
     
@@ -126,6 +126,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func startCaptureSession() {
         session.startRunning()
+//        VideoService.instance.launchVideoRecorder(in: self, completion: nil)
+//        VideoService.instance.delegate = self
     }
     
     func captureOutput(_ captureOutput: AVCaptureOutput, didDrop didDropSampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -210,5 +212,38 @@ extension ViewController: AVCapturePhotoCaptureDelegate {
         }
 
         self.imageView.image = cropToBounds(image: image, rect: foundBounds)
+    }
+}
+
+extension ViewController : VideoServiceDelegate {
+    
+    func videoDidFinishSaving(error: Error?, url: URL?) {
+        let success: Bool = error == nil
+        
+        if success {
+//            button.option = .playMovie
+//            self.videoURL = url
+            print(url)
+        }
+        
+        let title = success ? "Success" : "Error"
+        let message = success ? "Video was saved" : "Could not save video"
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension ViewController : AVCaptureFileOutputRecordingDelegate {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        
+    }
+    
+    func captureOutput(captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!, fromConnections connections: [AnyObject]!, error: NSError!) {
+        return
+    }
+
+    func captureOutput(captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAtURL fileURL: NSURL!, fromConnections connections: [AnyObject]!) {
+        return
     }
 }
