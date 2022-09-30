@@ -198,6 +198,10 @@ class ObjectRecognitionViewController: ViewController {
 //
 //        videoFileOutput.startRecordingToOutputFileURL(filePath, recordingDelegate: recordingDelegate)
         
+        
+        
+        
+        
         if (!isRecording) {
             let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let filePath = documentsURL.appendingPathExtension("temp")

@@ -215,28 +215,28 @@ extension ViewController: AVCapturePhotoCaptureDelegate {
     }
 }
 
-extension ViewController : VideoServiceDelegate {
-    
-    func videoDidFinishSaving(error: Error?, url: URL?) {
-        let success: Bool = error == nil
-        
-        if success {
-//            button.option = .playMovie
-//            self.videoURL = url
-            print(url)
-        }
-        
-        let title = success ? "Success" : "Error"
-        let message = success ? "Video was saved" : "Could not save video"
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-}
+//extension ViewController : VideoServiceDelegate {
+//
+//    func videoDidFinishSaving(error: Error?, url: URL?) {
+//        let success: Bool = error == nil
+//
+//        if success {
+////            button.option = .playMovie
+////            self.videoURL = url
+//            print(url)
+//        }
+//
+//        let title = success ? "Success" : "Error"
+//        let message = success ? "Video was saved" : "Could not save video"
+//        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+//        self.present(alert, animated: true, completion: nil)
+//    }
+//}
 
 extension ViewController : AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        
+        return
     }
     
     func captureOutput(captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!, fromConnections connections: [AnyObject]!, error: NSError!) {
