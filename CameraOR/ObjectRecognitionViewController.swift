@@ -10,7 +10,10 @@ import AVFoundation
 import Vision
 
 class ObjectRecognitionViewController: ViewController {
+    var isRecording: Bool = false
+    
     private var detectionOverlay: CALayer! = nil
+    
     
     // Vision parts
     private var requests = [VNRequest]()
@@ -96,6 +99,8 @@ class ObjectRecognitionViewController: ViewController {
         
         view.addSubview(cameraButton)
         view.bringSubviewToFront(cameraButton)
+        
+        session.addOutput(videoFileOutput)
     }
     
     func setupLayers() {
@@ -165,8 +170,8 @@ class ObjectRecognitionViewController: ViewController {
         return shapeLayer
     }
     
-    // Clean up capture setup
-
+    var videoFileOutput = AVCaptureMovieFileOutput()
+    
     override func didTapCameraButton(){        
 //        let photoSettings = AVCapturePhotoSettings()
 //        photoSettings.isHighResolutionPhotoEnabled = true
@@ -180,30 +185,38 @@ class ObjectRecognitionViewController: ViewController {
 //
 //        photoOutput.capturePhoto(with: photoSettings, delegate: self)
 //
-        var recordingDelegate:AVCaptureFileOutputRecordingDelegate? = self
-
+//        var recordingDelegate:AVCaptureFileOutputRecordingDelegate? = self
+//
+////        var videoFileOutput = AVCaptureMovieFileOutput()
+////        self.captureSession.addOutput(videoFileOutput)
+//
 //        var videoFileOutput = AVCaptureMovieFileOutput()
-//        self.captureSession.addOutput(videoFileOutput)
-        
-        var videoFileOutput = AVCaptureMovieFileOutput()
-        session.addOutput(videoFileOutput)
+//        session.addOutput(videoFileOutput)
 //        session.addOutput(videoDataOutput)
 
 //        let filePath = NSURL(fileURLWithPath: "filePath")
 //
 //        videoFileOutput.startRecordingToOutputFileURL(filePath, recordingDelegate: recordingDelegate)
         
-        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let filePath = documentsURL.appendingPathExtension("temp")
+        if (!isRecording) {
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let filePath = documentsURL.appendingPathExtension("temp")
+            
+            // Do recording and save the output to the `filePath`
+            var recordingDelegate:AVCaptureFileOutputRecordingDelegate? = self
+            videoFileOutput.startRecording(to: filePath, recordingDelegate: recordingDelegate!)
+            cameraButton.backgroundColor = .red
+        } else {
+            videoFileOutput.stopRecording()
+            cameraButton.backgroundColor = .white
 
-        // Do recording and save the output to the `filePath`
-        videoFileOutput.startRecording(to: filePath, recordingDelegate: recordingDelegate!)
-        
-//        cameraButton.removeFromSuperview()
-//        detectionOverlay.removeFromSuperlayer()
-//
-//        super.didTapCameraButton()
-        
+            cameraButton.removeFromSuperview()
+            detectionOverlay.removeFromSuperlayer()
+    
+            session.removeOutput(videoFileOutput)
+            super.didTapCameraButton()
+        }
+        isRecording = !isRecording
         
     }
 }
