@@ -99,8 +99,6 @@ class ObjectRecognitionViewController: ViewController {
         
         view.addSubview(cameraButton)
         view.bringSubviewToFront(cameraButton)
-        
-        session.addOutput(videoFileOutput)
     }
     
     func setupLayers() {
@@ -203,12 +201,14 @@ class ObjectRecognitionViewController: ViewController {
         
         
         if (!isRecording) {
+            session.addOutput(videoFileOutput)
             let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let filePath = documentsURL.appendingPathExtension("temp")
             
             // Do recording and save the output to the `filePath`
             var recordingDelegate:AVCaptureFileOutputRecordingDelegate? = self
             videoFileOutput.startRecording(to: filePath, recordingDelegate: recordingDelegate!)
+            
             cameraButton.backgroundColor = .red
         } else {
             videoFileOutput.stopRecording()

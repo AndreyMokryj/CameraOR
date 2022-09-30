@@ -240,6 +240,20 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
     }
     
     func captureOutput(captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!, fromConnections connections: [AnyObject]!, error: NSError!) {
+        
+//                let success: Bool = error == nil
+//
+//                if success {
+//        //            button.option = .playMovie
+//        //            self.videoURL = url
+//                    print(outputFileURL)
+//                }
+//
+//                let title = success ? "Success" : "Error"
+//                let message = success ? "Video was saved" : "Could not save video"
+//                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//                alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+//                self.present(alert, animated: true, completion: nil)
         return
     }
 
