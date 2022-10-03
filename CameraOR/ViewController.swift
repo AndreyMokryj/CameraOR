@@ -49,6 +49,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
     let videoDataOutput = AVCaptureVideoDataOutput()
     let photoOutput = AVCapturePhotoOutput()
+    let videoFileOutput = AVCaptureMovieFileOutput()
+
     var deviceInput: AVCaptureDeviceInput!
     
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
@@ -94,6 +96,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return
         }
         
+
+//        if session.canAddOutput(videoFileOutput) {
+////            session.addOutput(videoFileOutput)
+//            // Add a video data output
+////            videoFileOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+////            videoFileOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+//        } else {
+//            print("Could not add video data output to the session")
+//            session.commitConfiguration()
+//            return
+//        }
+        
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
             // Add a video data output
@@ -105,6 +119,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return
         }
         let captureConnection = videoDataOutput.connection(with: .video)
+//        let captureConnection = videoFileOutput.connection(with: .video)
         // Always process the frames
         captureConnection?.isEnabled = true
         do {
@@ -126,6 +141,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func startCaptureSession() {
         session.startRunning()
+        
 //        VideoService.instance.launchVideoRecorder(in: self, completion: nil)
 //        VideoService.instance.delegate = self
     }
@@ -241,20 +257,20 @@ extension ViewController : AVCaptureFileOutputRecordingDelegate {
     
     func captureOutput(captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!, fromConnections connections: [AnyObject]!, error: NSError!) {
         
-//                let success: Bool = error == nil
-//
-//                if success {
-//        //            button.option = .playMovie
-//        //            self.videoURL = url
-//                    print(outputFileURL)
-//                }
-//
-//                let title = success ? "Success" : "Error"
-//                let message = success ? "Video was saved" : "Could not save video"
-//                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-//                alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//                self.present(alert, animated: true, completion: nil)
-        return
+                let success: Bool = error == nil
+
+                if success {
+        //            button.option = .playMovie
+        //            self.videoURL = url
+                    print(outputFileURL)
+                }
+
+                let title = success ? "Success" : "Error"
+                let message = success ? "Video was saved" : "Could not save video"
+                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+//        return
     }
 
     func captureOutput(captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAtURL fileURL: NSURL!, fromConnections connections: [AnyObject]!) {

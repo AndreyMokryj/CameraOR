@@ -8,8 +8,18 @@
 import UIKit
 import AVFoundation
 import Vision
+import ImageIO
 
 class ObjectRecognitionViewController: ViewController {
+    var sampleBufferGlobal : CMSampleBuffer?
+    let writerFileName = "tempVideoAsset.mov"
+    var presentationTime : CMTime!
+    var outputSettings   = [String: Any]()
+    var videoWriterInput: AVAssetWriterInput!
+    var assetWriter: AVAssetWriter!
+    
+    
+    
     var isRecording: Bool = false
     
     private var detectionOverlay: CALayer! = nil
@@ -72,6 +82,9 @@ class ObjectRecognitionViewController: ViewController {
     }
     
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        sampleBufferGlobal = sampleBuffer
+        writeVideoFromData()
+        
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
@@ -99,6 +112,8 @@ class ObjectRecognitionViewController: ViewController {
         
         view.addSubview(cameraButton)
         view.bringSubviewToFront(cameraButton)
+        
+        setupAssetWriter()
     }
     
     func setupLayers() {
@@ -168,7 +183,7 @@ class ObjectRecognitionViewController: ViewController {
         return shapeLayer
     }
     
-    var videoFileOutput = AVCaptureMovieFileOutput()
+//    var videoFileOutput = AVCaptureMovieFileOutput()
     
     override func didTapCameraButton(){        
 //        let photoSettings = AVCapturePhotoSettings()
@@ -201,26 +216,165 @@ class ObjectRecognitionViewController: ViewController {
         
         
         if (!isRecording) {
-            session.addOutput(videoFileOutput)
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let filePath = documentsURL.appendingPathExtension("temp")
+//            session.addOutput(videoFileOutput)
+//            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//            let filePath = documentsURL.appendingPathExtension("temp")
             
             // Do recording and save the output to the `filePath`
-            var recordingDelegate:AVCaptureFileOutputRecordingDelegate? = self
-            videoFileOutput.startRecording(to: filePath, recordingDelegate: recordingDelegate!)
+//            var recordingDelegate:AVCaptureFileOutputRecordingDelegate? = self
+//            videoFileOutput.startRecording(to: filePath, recordingDelegate: recordingDelegate!)
             
+            
+//            setupAssetWriter()
+//            assetWriter.startWriting()
+//            assetWriter?.startSession(atSourceTime:  presentationTime)
+//            writeVideoFromData()
             cameraButton.backgroundColor = .red
         } else {
-            videoFileOutput.stopRecording()
+//            stopAssetWriter()
+//            videoFileOutput.stopRecording()
             cameraButton.backgroundColor = .white
 
             cameraButton.removeFromSuperview()
             detectionOverlay.removeFromSuperlayer()
     
-            session.removeOutput(videoFileOutput)
+//            session.removeOutput(videoFileOutput)
+            
             super.didTapCameraButton()
+            stopAssetWriter()
         }
         isRecording = !isRecording
         
+    }
+    
+    
+    ///Record with displayed bounds
+//    fileprivate var videoWriter: AVAssetWriter!
+//    fileprivate var videoWriterInput: AVAssetWriterInput!
+//    fileprivate var audioWriterInput: AVAssetWriterInput!
+//    fileprivate var sessionAtSourceTime: CMTime?
+//
+//    fileprivate func setupWriter() {
+//      do {
+//          let url = AssetUtils.outputAssetURL(mediaType: .video)
+//          videoWriter = try AVAssetWriter(url: url, fileType: AVFileTypeMPEG4)
+//
+//          //Add video input
+//          videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: [
+//                  AVVideoCodecKey: AVVideoCodecH264,
+//                  AVVideoWidthKey: 720,
+//                  AVVideoHeightKey: 1280,
+//                  AVVideoCompressionPropertiesKey: [
+//                      AVVideoAverageBitRateKey: 2300000,
+//                  ],
+//              ])
+//          videoWriterInput.expectsMediaDataInRealTime = true //Make sure we are exporting data at realtime
+//          if videoWriter.canAdd(videoWriterInput) {
+//              videoWriter.add(videoWriterInput)
+//          }
+//
+//          //Add audio input
+//          audioWriterInput = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: [
+//                  AVFormatIDKey: kAudioFormatMPEG4AAC,
+//                  AVNumberOfChannelsKey: 1,
+//                  AVSampleRateKey: 44100,
+//                  AVEncoderBitRateKey: 64000,
+//              ])
+//          audioWriterInput.expectsMediaDataInRealTime = true
+//          if videoWriter.canAdd(audioWriterInput) {
+//              videoWriter.add(audioWriterInput)
+//          }
+//
+//          videoWriter.startWriting() //Means ready to write down the file
+//      }
+//      catch let error {
+//          debugPrint(error.localizedDescription)
+//      }
+//    }
+//
+//    fileprivate func canWrite() -> Bool {
+//        return isRecording
+//            && videoWriter != nil
+//            && videoWriter.status == .writing
+//    }
+//
+//
+    
+    
+    
+    func setupAssetWriter () {
+
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//        let filePath = documentsURL.appendingPathExtension("temp")
+        let filePath = documentsURL.appendingPathComponent(writerFileName)
+        let filePathStr = filePath.path
+        print("filePath.path = \(filePath.path)")
+        
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: (filePathStr)) {
+            // Delete file
+            try? fileManager.removeItem(atPath: filePathStr)
+        } else {
+            print("File does not exist")
+        }
+
+        presentationTime  = CMTime.zero
+//        presentationTime  = CMSampleBufferPresentationTimeStamp.z
+
+        outputSettings = [AVVideoCodecKey   : AVVideoCodecType.h264,
+                          AVVideoWidthKey: 720,
+                          AVVideoHeightKey: 1280]
+
+        videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: outputSettings)
+        videoWriterInput.expectsMediaDataInRealTime = true
+//        assetWriter = try! AVAssetWriter(outputURL: filePath, fileType: AVFileType.mov)
+        assetWriter = try! AVAssetWriter(outputURL: filePath, fileType: AVFileType.mov)
+
+//        do {
+//            assetWriter = try! AVAssetWriter(outputURL: filePath, fileType: AVFileType.mov)
+//        } catch {
+//            print("Error creating asset writer: \(error)")
+//        }
+        
+        assetWriter!.add(videoWriterInput)
+//        assetWriter!.startWriting()
+        print("aaa")
+    }
+    
+    func writeVideoFromData() {
+        guard isRecording else {
+            return
+        }
+        print("Failed: \(assetWriter?.status == AVAssetWriter.Status.failed)")
+        print("Error: \(assetWriter?.error)")
+
+        if assetWriter?.status == AVAssetWriter.Status.unknown {
+            if (( assetWriter?.startWriting ) != nil) {
+                assetWriter?.startWriting()
+                assetWriter?.startSession(atSourceTime:  presentationTime)
+            }
+        }
+        if assetWriter?.status == AVAssetWriter.Status.writing {
+            if (videoWriterInput.isReadyForMoreMediaData == true) {
+                if  videoWriterInput.append(sampleBufferGlobal!) == false {
+                    print(" we have a problem writing video")
+                }
+            }
+        }
+    }
+    
+    func stopAssetWriter() {
+        videoWriterInput.markAsFinished()
+        assetWriter?.finishWriting(completionHandler: {
+            print(self.assetWriter!.status)
+            if (self.assetWriter?.status == AVAssetWriter.Status.failed) {
+                print("creating movie file is failed ")
+            } else {
+                print(" creating movie file was a success ")
+                DispatchQueue.main.async(execute: { () -> Void in
+
+                })
+            }
+        })
     }
 }
