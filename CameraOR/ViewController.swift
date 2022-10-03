@@ -95,19 +95,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             session.commitConfiguration()
             return
         }
-        
 
-//        if session.canAddOutput(videoFileOutput) {
-////            session.addOutput(videoFileOutput)
-//            // Add a video data output
-////            videoFileOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-////            videoFileOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
-//        } else {
-//            print("Could not add video data output to the session")
-//            session.commitConfiguration()
-//            return
-//        }
-        
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
             // Add a video data output
@@ -119,7 +107,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return
         }
         let captureConnection = videoDataOutput.connection(with: .video)
-//        let captureConnection = videoFileOutput.connection(with: .video)
         // Always process the frames
         captureConnection?.isEnabled = true
         do {
@@ -141,9 +128,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func startCaptureSession() {
         session.startRunning()
-        
-//        VideoService.instance.launchVideoRecorder(in: self, completion: nil)
-//        VideoService.instance.delegate = self
     }
     
     func captureOutput(_ captureOutput: AVCaptureOutput, didDrop didDropSampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -228,52 +212,5 @@ extension ViewController: AVCapturePhotoCaptureDelegate {
         }
 
         self.imageView.image = cropToBounds(image: image, rect: foundBounds)
-    }
-}
-
-//extension ViewController : VideoServiceDelegate {
-//
-//    func videoDidFinishSaving(error: Error?, url: URL?) {
-//        let success: Bool = error == nil
-//
-//        if success {
-////            button.option = .playMovie
-////            self.videoURL = url
-//            print(url)
-//        }
-//
-//        let title = success ? "Success" : "Error"
-//        let message = success ? "Video was saved" : "Could not save video"
-//        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-//        self.present(alert, animated: true, completion: nil)
-//    }
-//}
-
-extension ViewController : AVCaptureFileOutputRecordingDelegate {
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        return
-    }
-    
-    func captureOutput(captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!, fromConnections connections: [AnyObject]!, error: NSError!) {
-        
-                let success: Bool = error == nil
-
-                if success {
-        //            button.option = .playMovie
-        //            self.videoURL = url
-                    print(outputFileURL)
-                }
-
-                let title = success ? "Success" : "Error"
-                let message = success ? "Video was saved" : "Could not save video"
-                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-//        return
-    }
-
-    func captureOutput(captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAtURL fileURL: NSURL!, fromConnections connections: [AnyObject]!) {
-        return
     }
 }
