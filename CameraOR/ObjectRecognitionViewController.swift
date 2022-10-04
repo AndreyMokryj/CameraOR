@@ -123,7 +123,7 @@ class ObjectRecognitionViewController: ViewController {
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
     }
-    
+
     func updateLayerGeometry() {
         let bounds = rootLayer.bounds
         var scale: CGFloat
@@ -209,12 +209,13 @@ class ObjectRecognitionViewController: ViewController {
         }
 
         outputSettings = [AVVideoCodecKey   : AVVideoCodecType.h264,
-                          AVVideoWidthKey: 720,
-                          AVVideoHeightKey: 1280]
+                             AVVideoWidthKey: 720 * 65.0 / 37.0,
+                            AVVideoHeightKey: 720]
 
         videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: outputSettings)
         videoWriterInput.expectsMediaDataInRealTime = true
-        
+        videoWriterInput.transform = CGAffineTransform(rotationAngle: .pi/2)
+
         assetWriter = try! AVAssetWriter(outputURL: filePath, fileType: AVFileType.mov)
         assetWriter!.add(videoWriterInput)
     }
