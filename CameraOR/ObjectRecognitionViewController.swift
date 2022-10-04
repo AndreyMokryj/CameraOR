@@ -13,7 +13,6 @@ import ImageIO
 class ObjectRecognitionViewController: ViewController {
     var sampleBufferGlobal : CMSampleBuffer?
     let writerFileName = "tempVideoAsset.mov"
-    var presentationTime : CMTime!
     var outputSettings   = [String: Any]()
     var videoWriterInput: AVAssetWriterInput!
     var assetWriter: AVAssetWriter!
@@ -209,7 +208,6 @@ class ObjectRecognitionViewController: ViewController {
             print("File does not exist")
         }
 
-        presentationTime = CMTime.zero
         outputSettings = [AVVideoCodecKey   : AVVideoCodecType.h264,
                           AVVideoWidthKey: 720,
                           AVVideoHeightKey: 1280]
@@ -229,7 +227,7 @@ class ObjectRecognitionViewController: ViewController {
         if assetWriter?.status == AVAssetWriter.Status.unknown {
             if (( assetWriter?.startWriting ) != nil) {
                 assetWriter?.startWriting()
-                assetWriter?.startSession(atSourceTime:  presentationTime)
+                assetWriter?.startSession(atSourceTime:  CMSampleBufferGetPresentationTimeStamp(sampleBufferGlobal!))
             }
         }
         if assetWriter?.status == AVAssetWriter.Status.writing {
