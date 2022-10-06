@@ -39,6 +39,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         session.removeInput(deviceInput)
         session.removeOutput(videoDataOutput)
         session.removeOutput(photoOutput)
+        
+        let _frames = getAllFrames()
+        print("After get frames")
+        self.imageView.image = _frames[3]
+        
     }
     
     var bufferSize: CGSize = .zero
@@ -151,6 +156,40 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             exifOrientation = .up
         }
         return exifOrientation
+    }
+    
+    
+    /// Get  frames from video
+    var videoUrl:URL?
+    
+    private var generator:AVAssetImageGenerator!
+
+    func getAllFrames() -> [UIImage?] {
+        let asset:AVAsset = AVAsset(url:self.videoUrl!)
+        let duration:Float64 = CMTimeGetSeconds(asset.duration)
+        self.generator = AVAssetImageGenerator(asset:asset)
+        generator.requestedTimeToleranceBefore = .zero //Optional
+        generator.requestedTimeToleranceAfter = .zero //Optional
+        self.generator.appliesPreferredTrackTransform = true
+        var frames:[UIImage?] = []
+        
+        for index:Int in 0 ..< Int(duration * 10) {
+            let _frame = self.getFrame(fromTime:Float64(Double(index) / 10.0))
+            frames.append(_frame)
+        }
+        self.generator = nil
+        return frames
+    }
+
+    private func getFrame(fromTime:Float64) -> UIImage? {
+        let time:CMTime = CMTimeMakeWithSeconds(fromTime, preferredTimescale:600)
+        let image:CGImage
+        do {
+            try image = self.generator.copyCGImage(at:time, actualTime:nil)
+        } catch {
+            return nil
+        }
+        return UIImage(cgImage:image)
     }
 }
 
