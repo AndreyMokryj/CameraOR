@@ -45,10 +45,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var rootLayer: CALayer! = nil
     
     @IBOutlet weak private var previewView: UIView!
-    private var session = AVCaptureSession()
+    var session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer! = nil
-    private let videoDataOutput = AVCaptureVideoDataOutput()
+    let videoDataOutput = AVCaptureVideoDataOutput()
     let photoOutput = AVCapturePhotoOutput()
+    let videoFileOutput = AVCaptureMovieFileOutput()
+
     var deviceInput: AVCaptureDeviceInput!
     
     private let videoDataOutputQueue = DispatchQueue(label: "VideoDataOutput", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
@@ -93,7 +95,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             session.commitConfiguration()
             return
         }
-        
+
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
             // Add a video data output

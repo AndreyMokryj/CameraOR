@@ -4,6 +4,8 @@
 <dict>
 	<key>NSCameraUsageDescription</key>
 	<string>The app uses camera to scan for objects</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The app uses microphone to record videos</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -23,5 +25,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>The app needs your permission to save video to library</string>
 </dict>
 </plist>

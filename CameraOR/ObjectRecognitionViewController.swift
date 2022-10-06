@@ -8,9 +8,19 @@
 import UIKit
 import AVFoundation
 import Vision
+import ImageIO
 
 class ObjectRecognitionViewController: ViewController {
+    var sampleBufferGlobal : CMSampleBuffer?
+    let writerFileName = "tempVideoAsset.mov"
+    var outputSettings   = [String: Any]()
+    var videoWriterInput: AVAssetWriterInput!
+    var assetWriter: AVAssetWriter!
+    
+    var isRecording: Bool = false
+    
     private var detectionOverlay: CALayer! = nil
+    
     
     // Vision parts
     private var requests = [VNRequest]()
@@ -69,6 +79,9 @@ class ObjectRecognitionViewController: ViewController {
     }
     
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        sampleBufferGlobal = sampleBuffer
+        writeVideoFromData()
+        
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
@@ -96,6 +109,8 @@ class ObjectRecognitionViewController: ViewController {
         
         view.addSubview(cameraButton)
         view.bringSubviewToFront(cameraButton)
+        
+        setupAssetWriter()
     }
     
     func setupLayers() {
@@ -108,7 +123,7 @@ class ObjectRecognitionViewController: ViewController {
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
     }
-    
+
     func updateLayerGeometry() {
         let bounds = rootLayer.bounds
         var scale: CGFloat
@@ -164,25 +179,115 @@ class ObjectRecognitionViewController: ViewController {
 
         return shapeLayer
     }
+        
+    override func didTapCameraButton(){
+        if (!isRecording) {
+            cameraButton.backgroundColor = .red
+        } else {
+            cameraButton.backgroundColor = .white
+            cameraButton.removeFromSuperview()
+            detectionOverlay.removeFromSuperlayer()
+                
+            super.didTapCameraButton()
+            stopAssetWriter()
+            let _frames = getAllFrames()
+            print("After get frames")
+        }
+        isRecording = !isRecording
+    }
+
+    func setupAssetWriter () {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let filePath = documentsURL.appendingPathComponent(writerFileName)
+        self.videoUrl = filePath
+        let filePathStr = filePath.path
+        print("filePath.path = \(filePath.path)")
+        
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: (filePathStr)) {
+            // Delete file
+            try? fileManager.removeItem(atPath: filePathStr)
+        } else {
+            print("File does not exist")
+        }
+
+        outputSettings = [AVVideoCodecKey   : AVVideoCodecType.h264,
+                             AVVideoWidthKey: 720 * 65.0 / 37.0,
+                            AVVideoHeightKey: 720]
+
+        videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: outputSettings)
+        videoWriterInput.expectsMediaDataInRealTime = true
+        videoWriterInput.transform = CGAffineTransform(rotationAngle: .pi/2)
+
+        assetWriter = try! AVAssetWriter(outputURL: filePath, fileType: AVFileType.mov)
+        assetWriter!.add(videoWriterInput)
+    }
     
-    // Clean up capture setup
-
-    override func didTapCameraButton(){        
-        let photoSettings = AVCapturePhotoSettings()
-        photoSettings.isHighResolutionPhotoEnabled = true
-        if self.deviceInput.device.isFlashAvailable {
-            photoSettings.flashMode = .auto
-        }
-
-        if let firstAvailablePreviewPhotoPixelFormatTypes = photoSettings.availablePreviewPhotoPixelFormatTypes.first {
-            photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: firstAvailablePreviewPhotoPixelFormatTypes]
+    func writeVideoFromData() {
+        guard isRecording else {
+            return
         }
         
-        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        if assetWriter?.status == AVAssetWriter.Status.unknown {
+            if (( assetWriter?.startWriting ) != nil) {
+                assetWriter?.startWriting()
+                assetWriter?.startSession(atSourceTime:  CMSampleBufferGetPresentationTimeStamp(sampleBufferGlobal!))
+            }
+        }
+        if assetWriter?.status == AVAssetWriter.Status.writing {
+            if (videoWriterInput.isReadyForMoreMediaData == true) {
+                if  videoWriterInput.append(sampleBufferGlobal!) == false {
+                    print("There is a problem with writing video")
+                }
+            }
+        }
+    }
+    
+    func stopAssetWriter() {
+        videoWriterInput.markAsFinished()
+        assetWriter?.finishWriting(completionHandler: {
+            print(self.assetWriter!.status)
+            if (self.assetWriter?.status == AVAssetWriter.Status.failed) {
+                print("Creating movie file has failed")
+            } else {
+                print("Creating movie file was successful")
+                DispatchQueue.main.async(execute: { () -> Void in
+
+                })
+            }
+        })
+    }
+    
+    /// Get  frames from video
+    var videoUrl:URL?
+    
+    private var generator:AVAssetImageGenerator!
+
+    func getAllFrames() -> [UIImage?] {
+        let asset:AVAsset = AVAsset(url:self.videoUrl!)
+        let duration:Float64 = CMTimeGetSeconds(asset.duration)
+        self.generator = AVAssetImageGenerator(asset:asset)
+        generator.requestedTimeToleranceBefore = .zero //Optional
+        generator.requestedTimeToleranceAfter = .zero //Optional
+        self.generator.appliesPreferredTrackTransform = true
+        var frames:[UIImage?] = []
         
-        cameraButton.removeFromSuperview()
-        detectionOverlay.removeFromSuperlayer()
-        
-        super.didTapCameraButton()
+        for index:Int in 0 ..< Int(duration * 10) {
+            let _frame = self.getFrame(fromTime:Float64(Double(index) / 10.0))
+            frames.append(_frame)
+        }
+        self.generator = nil
+        return frames
+    }
+
+    private func getFrame(fromTime:Float64) -> UIImage? {
+        let time:CMTime = CMTimeMakeWithSeconds(fromTime, preferredTimescale:600)
+        let image:CGImage
+        do {
+            try image = self.generator.copyCGImage(at:time, actualTime:nil)
+        } catch {
+            return nil
+        }
+        return UIImage(cgImage:image)
     }
 }
