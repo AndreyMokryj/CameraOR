@@ -40,9 +40,23 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         session.removeOutput(videoDataOutput)
         session.removeOutput(photoOutput)
         
+//        let _frames = getAllFrames().removeAll(where: (el) -> el == nil)
         let _frames = getAllFrames()
+        var _framesNotNil:[UIImage] = []
+        for el in _frames {
+            if el != nil {
+                _framesNotNil.append(el!)
+            }
+        }
+        
         print("After get frames")
-        self.imageView.image = _frames[3]
+        Task {
+            let _stitched = await stitch(images: _framesNotNil)
+            self.imageView.image = _stitched
+            
+        }
+//        let _stitched = await stitch(images: _framesNotNil)
+//        self.imageView.image = _stitched
         
     }
     
@@ -195,6 +209,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     /// Stitch frames
     func stitch(images:[UIImage]) async -> UIImage {
         let _count = images.count
+        print(">>>>>>>>>Image count: \(_count)<<<<<<<<<")
         
         if (_count <= 7) {
             let stitchedImage:UIImage? = try? CVWrapper.process(with: images)
@@ -204,7 +219,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         switch _count {
             case 8:
                 let _newImages = Array(images.prefix(7))
-                return await stitch(images: _newImages)
+                let _stitchedImage = await stitch(images: _newImages)
+                return _stitchedImage
             case 9:
                 let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4]])
                 let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5]])
@@ -318,11 +334,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         _imagesToStitch.append(images[_endIndex])
                     }
                     
-                    await _newImages.append(stitch(images: _imagesToStitch))
+                    let _stitchedImage = await stitch(images: _imagesToStitch)
+                    _newImages.append(_stitchedImage)
                     _endIndex += 3
                 }
             
-            
+                print(">>>>>>>>>Count of new images: \(_newImages.count)")
                 return await stitch(images: _newImages)
         }
     }
