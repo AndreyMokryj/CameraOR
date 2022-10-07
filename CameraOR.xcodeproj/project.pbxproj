@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		496FB06B28E5F37D0072DC75 /* VideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496FB06A28E5F37D0072DC75 /* VideoService.swift */; };
 		496FB06E28E5F4260072DC75 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496FB06D28E5F4260072DC75 /* Device.swift */; };
+		496FB09A28F0466D0072DC75 /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09428F0466D0072DC75 /* UIImage+OpenCV.mm */; };
+		496FB09B28F0466D0072DC75 /* stitching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09528F0466D0072DC75 /* stitching.cpp */; };
+		496FB09C28F0466D0072DC75 /* UIImage+Rotate.m in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09628F0466D0072DC75 /* UIImage+Rotate.m */; };
+		496FB09D28F0466D0072DC75 /* CVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09928F0466D0072DC75 /* CVWrapper.mm */; };
 		49947DB628A4089100518099 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DB528A4089100518099 /* AppDelegate.swift */; };
 		49947DB828A4089100518099 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DB728A4089100518099 /* SceneDelegate.swift */; };
 		49947DBA28A4089100518099 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DB928A4089100518099 /* ViewController.swift */; };
@@ -17,11 +21,24 @@
 		49947DC228A4089300518099 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49947DC028A4089300518099 /* LaunchScreen.storyboard */; };
 		49947DCA28A4F28A00518099 /* ObjectRecognitionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */; };
 		49947DCC28A502AD00518099 /* ObjectDetector.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 49947DCB28A502AD00518099 /* ObjectDetector.mlmodel */; };
+		AA7EAD70470591BFDDD831C0 /* Pods_CameraOR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B9E0A7760A2C67455BA39A2 /* Pods_CameraOR.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		21C268150B20646CFC951AFC /* Pods-CameraOR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CameraOR.debug.xcconfig"; path = "Target Support Files/Pods-CameraOR/Pods-CameraOR.debug.xcconfig"; sourceTree = "<group>"; };
+		26E6890594A673E6B8D26104 /* Pods-CameraOR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CameraOR.release.xcconfig"; path = "Target Support Files/Pods-CameraOR/Pods-CameraOR.release.xcconfig"; sourceTree = "<group>"; };
 		496FB06A28E5F37D0072DC75 /* VideoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoService.swift; sourceTree = "<group>"; };
 		496FB06D28E5F4260072DC75 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		496FB09028F0466D0072DC75 /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
+		496FB09128F0466D0072DC75 /* stitching.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stitching.h; sourceTree = "<group>"; };
+		496FB09228F0466D0072DC75 /* CameraOR-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CameraOR-Bridging-Header.h"; sourceTree = "<group>"; };
+		496FB09328F0466D0072DC75 /* CVWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVWrapper.h; sourceTree = "<group>"; };
+		496FB09428F0466D0072DC75 /* UIImage+OpenCV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIImage+OpenCV.mm"; sourceTree = "<group>"; };
+		496FB09528F0466D0072DC75 /* stitching.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stitching.cpp; sourceTree = "<group>"; };
+		496FB09628F0466D0072DC75 /* UIImage+Rotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Rotate.m"; sourceTree = "<group>"; };
+		496FB09728F0466D0072DC75 /* SwiftStitch-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SwiftStitch-Bridging-Header.h"; sourceTree = "<group>"; };
+		496FB09828F0466D0072DC75 /* UIImage+Rotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotate.h"; sourceTree = "<group>"; };
+		496FB09928F0466D0072DC75 /* CVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CVWrapper.mm; sourceTree = "<group>"; };
 		49947DB228A4089100518099 /* CameraOR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraOR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49947DB528A4089100518099 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49947DB728A4089100518099 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -32,6 +49,7 @@
 		49947DC328A4089300518099 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49947DC928A4F28A00518099 /* ObjectRecognitionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectRecognitionViewController.swift; sourceTree = "<group>"; };
 		49947DCB28A502AD00518099 /* ObjectDetector.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = ObjectDetector.mlmodel; sourceTree = "<group>"; };
+		5B9E0A7760A2C67455BA39A2 /* Pods_CameraOR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CameraOR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,12 +57,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA7EAD70470591BFDDD831C0 /* Pods_CameraOR.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27B7A51AE047A767142E1238 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5B9E0A7760A2C67455BA39A2 /* Pods_CameraOR.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3AD7D48210A21FA21BB3E8D9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				21C268150B20646CFC951AFC /* Pods-CameraOR.debug.xcconfig */,
+				26E6890594A673E6B8D26104 /* Pods-CameraOR.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		496FB06C28E5F4110072DC75 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,11 +90,30 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		496FB08F28F046270072DC75 /* Stitch */ = {
+			isa = PBXGroup;
+			children = (
+				496FB09228F0466D0072DC75 /* CameraOR-Bridging-Header.h */,
+				496FB09328F0466D0072DC75 /* CVWrapper.h */,
+				496FB09928F0466D0072DC75 /* CVWrapper.mm */,
+				496FB09528F0466D0072DC75 /* stitching.cpp */,
+				496FB09128F0466D0072DC75 /* stitching.h */,
+				496FB09728F0466D0072DC75 /* SwiftStitch-Bridging-Header.h */,
+				496FB09028F0466D0072DC75 /* UIImage+OpenCV.h */,
+				496FB09428F0466D0072DC75 /* UIImage+OpenCV.mm */,
+				496FB09828F0466D0072DC75 /* UIImage+Rotate.h */,
+				496FB09628F0466D0072DC75 /* UIImage+Rotate.m */,
+			);
+			path = Stitch;
+			sourceTree = "<group>";
+		};
 		49947DA928A4089100518099 = {
 			isa = PBXGroup;
 			children = (
 				49947DB428A4089100518099 /* CameraOR */,
 				49947DB328A4089100518099 /* Products */,
+				3AD7D48210A21FA21BB3E8D9 /* Pods */,
+				27B7A51AE047A767142E1238 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +128,7 @@
 		49947DB428A4089100518099 /* CameraOR */ = {
 			isa = PBXGroup;
 			children = (
+				496FB08F28F046270072DC75 /* Stitch */,
 				496FB06C28E5F4110072DC75 /* Helpers */,
 				49947DB528A4089100518099 /* AppDelegate.swift */,
 				49947DB728A4089100518099 /* SceneDelegate.swift */,
@@ -94,6 +151,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49947DC628A4089300518099 /* Build configuration list for PBXNativeTarget "CameraOR" */;
 			buildPhases = (
+				479B9CD6CF3407D20B434336 /* [CP] Check Pods Manifest.lock */,
 				49947DAE28A4089100518099 /* Sources */,
 				49947DAF28A4089100518099 /* Frameworks */,
 				49947DB028A4089100518099 /* Resources */,
@@ -119,6 +177,7 @@
 				TargetAttributes = {
 					49947DB128A4089100518099 = {
 						CreatedOnToolsVersion = 13.4.1;
+						LastSwiftMigration = 1400;
 					};
 				};
 			};
@@ -153,17 +212,46 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		479B9CD6CF3407D20B434336 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CameraOR-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		49947DAE28A4089100518099 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				496FB09A28F0466D0072DC75 /* UIImage+OpenCV.mm in Sources */,
 				49947DBA28A4089100518099 /* ViewController.swift in Sources */,
+				496FB09B28F0466D0072DC75 /* stitching.cpp in Sources */,
 				496FB06B28E5F37D0072DC75 /* VideoService.swift in Sources */,
 				49947DB628A4089100518099 /* AppDelegate.swift in Sources */,
 				49947DB828A4089100518099 /* SceneDelegate.swift in Sources */,
 				49947DCA28A4F28A00518099 /* ObjectRecognitionViewController.swift in Sources */,
 				496FB06E28E5F4260072DC75 /* Device.swift in Sources */,
+				496FB09D28F0466D0072DC75 /* CVWrapper.mm in Sources */,
+				496FB09C28F0466D0072DC75 /* UIImage+Rotate.m in Sources */,
 				49947DCC28A502AD00518099 /* ObjectDetector.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -306,9 +394,11 @@
 		};
 		49947DC728A4089300518099 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21C268150B20646CFC951AFC /* Pods-CameraOR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4X2B27SFD7;
@@ -327,6 +417,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = radency.CameraOR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "CameraOR/Stitch/CameraOR-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -334,9 +426,11 @@
 		};
 		49947DC828A4089300518099 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 26E6890594A673E6B8D26104 /* Pods-CameraOR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4X2B27SFD7;
@@ -355,6 +449,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = radency.CameraOR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "CameraOR/Stitch/CameraOR-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

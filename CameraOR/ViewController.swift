@@ -191,6 +191,141 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         return UIImage(cgImage:image)
     }
+    
+    /// Stitch frames
+    func stitch(images:[UIImage]) async -> UIImage {
+        let _count = images.count
+        
+        if (_count <= 7) {
+            let stitchedImage:UIImage? = try? CVWrapper.process(with: images)
+            return stitchedImage!
+        }
+        
+        switch _count {
+            case 8:
+                let _newImages = Array(images.prefix(7))
+                return await stitch(images: _newImages)
+            case 9:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4]])
+                let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5]])
+                let _newImage2 = await stitch(images: [images[2], images[3], images[4], images[5], images[6]])
+                let _newImage3 = await stitch(images: [images[3], images[4], images[5], images[6], images[7]])
+                let _newImage4 = await stitch(images: [images[4], images[5], images[6], images[7], images[8]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4]
+                return await stitch(images: _newImages)
+            case 10:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5]])
+                let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage2 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage3 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8]])
+                let _newImage4 = await stitch(images: [images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4]
+                return await stitch(images: _newImages)
+            case 11:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5]])
+                let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage2 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage3 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8]])
+                let _newImage4 = await stitch(images: [images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage5 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5]
+                return await stitch(images: _newImages)
+            case 12:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5]])
+                let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage2 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage3 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8]])
+                let _newImage4 = await stitch(images: [images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage5 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10]])
+                let _newImage6 = await stitch(images: [images[6], images[7], images[8], images[9], images[10], images[11]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            case 13:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage1 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage2 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8]])
+                let _newImage3 = await stitch(images: [images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage4 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10]])
+                let _newImage5 = await stitch(images: [images[6], images[7], images[8], images[9], images[10], images[11]])
+                let _newImage6 = await stitch(images: [images[7], images[8], images[9], images[10], images[11], images[12]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            case 14:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage1 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage2 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8]])
+                let _newImage3 = await stitch(images: [images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage4 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10]])
+                let _newImage5 = await stitch(images: [images[6], images[7], images[8], images[9], images[10], images[11]])
+                let _newImage6 = await stitch(images: [images[7], images[8], images[9], images[10], images[11], images[12], images[13]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            case 15:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage1 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage2 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8]])
+                let _newImage3 = await stitch(images: [images[4], images[5], images[6], images[7], images[8], images[9], images[10]])
+                let _newImage4 = await stitch(images: [images[6], images[7], images[8], images[9], images[10], images[11]])
+                let _newImage5 = await stitch(images: [images[7], images[8], images[9], images[10], images[11], images[12]])
+                let _newImage6 = await stitch(images: [images[8], images[9], images[10], images[11], images[12], images[13], images[14]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            case 16:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5], images[6]])
+                let _newImage1 = await stitch(images: [images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage2 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage3 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10]])
+                let _newImage4 = await stitch(images: [images[6], images[7], images[8], images[9], images[10], images[11], images[12]])
+                let _newImage5 = await stitch(images: [images[8], images[9], images[10], images[11], images[12], images[13]])
+                let _newImage6 = await stitch(images: [images[9], images[10], images[11], images[12], images[13], images[14], images[15]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            case 17:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5]])
+                let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage2 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage3 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10], images[11]])
+                let _newImage4 = await stitch(images: [images[7], images[8], images[9], images[10], images[11], images[12], images[13]])
+                let _newImage5 = await stitch(images: [images[9], images[10], images[11], images[12], images[13], images[14], images[15]])
+                let _newImage6 = await stitch(images: [images[11], images[12], images[13], images[14], images[15], images[16]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            case 18:
+                let _newImage0 = await stitch(images: [images[0], images[1], images[2], images[3], images[4], images[5]])
+                let _newImage1 = await stitch(images: [images[1], images[2], images[3], images[4], images[5], images[6], images[7]])
+                let _newImage2 = await stitch(images: [images[3], images[4], images[5], images[6], images[7], images[8], images[9]])
+                let _newImage3 = await stitch(images: [images[5], images[6], images[7], images[8], images[9], images[10], images[11]])
+                let _newImage4 = await stitch(images: [images[7], images[8], images[9], images[10], images[11], images[12], images[13]])
+                let _newImage5 = await stitch(images: [images[9], images[10], images[11], images[12], images[13], images[14], images[15]])
+                let _newImage6 = await stitch(images: [images[11], images[12], images[13], images[14], images[15], images[16], images[17]])
+                let _newImages = [_newImage0, _newImage1, _newImage2, _newImage3, _newImage4, _newImage5, _newImage6]
+                return await stitch(images: _newImages)
+            default:
+                var _newImages:[UIImage] = []
+                var _endIndex = 4
+                if (_count % 3 == 0) {
+                    _endIndex = 5
+                }
+                while _endIndex <= _count {
+                    var _imagesToStitch:[UIImage] = []
+                    if (_endIndex - 5 >= 0) {
+                        _imagesToStitch.append(images[_endIndex - 5])
+                    }
+                    for  i in (_endIndex - 4)...(_endIndex - 1) {
+                        _imagesToStitch.append(images[i])
+                    }
+                    if (_endIndex < _count) {
+                        _imagesToStitch.append(images[_endIndex])
+                    }
+                    
+                    await _newImages.append(stitch(images: _imagesToStitch))
+                    _endIndex += 3
+                }
+            
+            
+                return await stitch(images: _newImages)
+        }
+    }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
