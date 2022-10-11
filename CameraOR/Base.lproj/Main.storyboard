@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,7 +13,7 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ObjectRecognitionViewController" customModule="CameraOR" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                    <view key="view" contentMode="scaleToFill" ambiguous="YES" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -30,7 +31,7 @@
                                     <action selector="didTapCameraButton" destination="BYZ-38-t0r" eventType="touchDown" id="1AK-XB-oRB"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UBN-zG-aEt">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UBN-zG-aEt">
                                 <rect key="frame" x="30" y="791" width="354" height="51"/>
                                 <gestureRecognizers/>
                                 <constraints>
@@ -42,28 +43,48 @@
                                     <action selector="didTapButton" destination="BYZ-38-t0r" eventType="touchUpInside" id="4CU-qp-am1"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Sv-Xv-Vdz">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Sv-Xv-Vdz">
                                 <rect key="frame" x="19" y="84" width="374" height="707"/>
                                 <gestureRecognizers/>
                             </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vq8-RV-4hU">
+                                <rect key="frame" x="157" y="341" width="100" height="100"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="lg0-2S-i0H">
+                                        <rect key="frame" x="40" y="40" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="Ksn-wm-0ER"/>
+                                    <constraint firstAttribute="width" constant="100" id="OwA-u3-gdK"/>
+                                    <constraint firstAttribute="height" constant="100" id="iAp-mW-WE8"/>
+                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="n1a-Tr-SZz"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="UBN-zG-aEt" secondAttribute="trailing" constant="30" id="7as-cr-xpQ"/>
+                            <constraint firstItem="Vq8-RV-4hU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="293" id="E0k-ay-j5b"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="4Sv-Xv-Vdz" secondAttribute="trailing" constant="20" id="F5I-uI-M24"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="UBN-zG-aEt" secondAttribute="bottom" constant="20" id="Gkh-jp-FDm"/>
                             <constraint firstItem="UBN-zG-aEt" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="PQc-wb-GcD"/>
+                            <constraint firstItem="Vq8-RV-4hU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ei0-Pu-qpK"/>
+                            <constraint firstItem="Vq8-RV-4hU" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="lj4-xU-FEE"/>
                             <constraint firstItem="UBN-zG-aEt" firstAttribute="top" secondItem="4Sv-Xv-Vdz" secondAttribute="bottom" constant="20" id="qWv-ns-K7h"/>
                             <constraint firstItem="4Sv-Xv-Vdz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="u5V-fh-y7v"/>
                             <constraint firstItem="4Sv-Xv-Vdz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="zAb-n8-kw8"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="lg0-2S-i0H" id="Jb3-GX-aCs"/>
                         <outlet property="button" destination="UBN-zG-aEt" id="hoA-Ys-ssc"/>
                         <outlet property="cameraButton" destination="kO0-yN-wFm" id="GXU-Ex-ozL"/>
                         <outlet property="imageView" destination="4Sv-Xv-Vdz" id="ycE-bW-OZF"/>
+                        <outlet property="loadingView" destination="Vq8-RV-4hU" id="cdy-WN-yiu"/>
                         <outlet property="previewView" destination="8bC-Xf-vdC" id="qyu-D6-Ppo"/>
                     </connections>
                 </viewController>

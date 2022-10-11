@@ -20,6 +20,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        hideSpinner()
         button.backgroundColor = .systemBlue
         button.setTitle("Open camera", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -41,6 +42,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         session.removeOutput(photoOutput)
         
 //        let _frames = getAllFrames().removeAll(where: (el) -> el == nil)
+        showSpinner()
         let _frames = getAllFrames()
         var _framesNotNil:[UIImage] = []
         for el in _frames {
@@ -52,6 +54,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         print("After get frames")
         Task {
             let _stitched = await stitch(images: _framesNotNil)
+            hideSpinner()
             self.imageView.image = _stitched
             
         }
@@ -351,6 +354,25 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 print(">>>>>>>>>Count of new images: \(_newImages.count)")
                 return await stitch(images: _newImages)
         }
+    }
+    
+    /// Spinner
+    @IBOutlet weak var loadingView: UIView! {
+      didSet {
+        loadingView.layer.cornerRadius = 6
+      }
+    }
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    private func showSpinner() {
+        activityIndicator.startAnimating()
+        loadingView.isHidden = false
+    }
+
+    private func hideSpinner() {
+        activityIndicator.stopAnimating()
+        loadingView.isHidden = true
     }
 }
 
