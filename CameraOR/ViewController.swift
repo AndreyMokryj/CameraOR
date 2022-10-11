@@ -365,6 +365,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var loadingLabel: UILabel!
+    
     private func showSpinner() {
         activityIndicator.startAnimating()
         loadingView.isHidden = false
