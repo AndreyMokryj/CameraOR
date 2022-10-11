@@ -42,6 +42,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         session.removeOutput(photoOutput)
         
 //        let _frames = getAllFrames().removeAll(where: (el) -> el == nil)
+        imageView.image = nil
         showSpinner()
         let _frames = getAllFrames()
         var _framesNotNil:[UIImage] = []
