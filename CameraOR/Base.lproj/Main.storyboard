@@ -72,25 +72,12 @@
                                     <constraint firstItem="lg0-2S-i0H" firstAttribute="leading" secondItem="Vq8-RV-4hU" secondAttribute="leading" id="1iM-iO-voc"/>
                                     <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="4aW-0t-0iA"/>
                                     <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="6O9-nD-5Py"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="7PZ-rs-9vg"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="AEN-do-E0s"/>
                                     <constraint firstItem="lg0-2S-i0H" firstAttribute="top" secondItem="Vq8-RV-4hU" secondAttribute="top" id="Cil-85-bfx"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="EaI-O6-BvO"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="KCx-Mf-g9u"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="Ksn-wm-0ER"/>
                                     <constraint firstAttribute="width" constant="100" id="OwA-u3-gdK"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="Quq-OF-he5"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="USH-Jl-DDg"/>
                                     <constraint firstAttribute="bottom" secondItem="3M7-dd-YxG" secondAttribute="bottom" id="Yq6-eM-pze"/>
                                     <constraint firstItem="3M7-dd-YxG" firstAttribute="top" secondItem="lg0-2S-i0H" secondAttribute="bottom" constant="1" id="cDg-v1-bCD"/>
                                     <constraint firstItem="3M7-dd-YxG" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="dPA-L5-hfw"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="dVg-HS-JCv"/>
                                     <constraint firstAttribute="height" constant="100" id="iAp-mW-WE8"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="n1a-Tr-SZz"/>
-                                    <constraint firstItem="3M7-dd-YxG" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="tLH-4W-25A"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="tdf-PW-sey"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerX" secondItem="Vq8-RV-4hU" secondAttribute="centerX" id="vAC-bL-uSU"/>
-                                    <constraint firstItem="lg0-2S-i0H" firstAttribute="centerY" secondItem="Vq8-RV-4hU" secondAttribute="centerY" id="vJc-iA-p1s"/>
                                     <constraint firstAttribute="trailing" secondItem="lg0-2S-i0H" secondAttribute="trailing" id="z3x-Xo-nOb"/>
                                 </constraints>
                             </view>
