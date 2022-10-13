@@ -31,6 +31,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 
     @IBAction func didTapButton(){
+        AppUtility.lockOrientation(.portrait, andRotateTo: .portrait)
         setupAVCapture()
     }
     
@@ -43,6 +44,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         session.removeOutput(photoOutput)
         
 //        let _frames = getAllFrames().removeAll(where: (el) -> el == nil)
+        
+        AppUtility.lockOrientation(.all)
         imageView.image = nil
         showSpinner()
         let _frames = getAllFrames()
