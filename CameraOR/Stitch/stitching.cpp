@@ -31,7 +31,7 @@ cv::Mat stitch (vector<Mat>& images)
 {
     imgs = images;
     Mat pano;
-    Ptr<Stitcher> stitcher = Stitcher::create();
+    Ptr<Stitcher> stitcher = Stitcher::create(Stitcher::SCANS);
     Stitcher::Status status = stitcher->stitch(imgs, pano);
     
     std::string errorString = "";
