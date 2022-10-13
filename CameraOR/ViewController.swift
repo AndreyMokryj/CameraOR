@@ -227,10 +227,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         for i in 0...6 {
             _newImages.append(_images[Int(round(Double(i) * _coef))])
         }
-        print ("Before try stitch")
-        let stitchedImage:UIImage? = try? CVWrapper.process(with: _newImages)
-        print ("After try stitch")
-        return stitchedImage
+        do {
+            print ("Before try stitch")
+            let stitchedImage:UIImage? = try CVWrapper.process(with: _newImages)
+            print ("After try stitch")
+            return stitchedImage
+        } catch let error as NSError {
+            let alert = UIAlertController(title: "Stitching Error", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+           self.show(alert, sender: nil)
+        }
+        return nil
         
 //        /// Recursive
 //        print(">>>>>>>>>Image count: \(_count)<<<<<<<<<")
