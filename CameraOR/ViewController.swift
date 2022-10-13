@@ -27,6 +27,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         cameraButton.backgroundColor = .white
         cameraButton.setTitle("", for: .normal)
+        cameraButton.removeFromSuperview()
     }
 
     @IBAction func didTapButton(){
