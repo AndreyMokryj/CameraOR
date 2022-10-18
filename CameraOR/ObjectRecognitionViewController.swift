@@ -110,8 +110,6 @@ class ObjectRecognitionViewController: ViewController {
         
         view.addSubview(cameraButton)
         view.bringSubviewToFront(cameraButton)
-        
-        setupAssetWriter()
     }
     
     func setupLayers() {
@@ -202,6 +200,7 @@ class ObjectRecognitionViewController: ViewController {
         
     override func didTapCameraButton(){
         if (!isRecording) {
+            setupAssetWriter()
             cameraButton.backgroundColor = .red
         } else {
             cameraButton.backgroundColor = .white
@@ -231,9 +230,13 @@ class ObjectRecognitionViewController: ViewController {
             print("File does not exist")
         }
 
+        let imageBuffer = CMSampleBufferGetImageBuffer(sampleBufferGlobal!);
+        let _width = CVPixelBufferGetWidth(imageBuffer!);
+        let _height = CVPixelBufferGetHeight(imageBuffer!);
+
         outputSettings = [AVVideoCodecKey   : AVVideoCodecType.h264,
-                             AVVideoWidthKey: 720 * 65.0 / 37.0,
-                            AVVideoHeightKey: 720]
+                             AVVideoWidthKey: _width,
+                            AVVideoHeightKey: _height]
 
         videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: outputSettings)
         videoWriterInput.expectsMediaDataInRealTime = true
