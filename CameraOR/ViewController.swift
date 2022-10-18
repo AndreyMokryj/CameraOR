@@ -15,6 +15,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet var cameraButton: UIButton!
     
     var foundBounds: CGRect? = nil
+    var squareBounds: CGRect? = nil
     var coef: Double = 0
 
     override func viewDidLoad() {
@@ -197,7 +198,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         for index:Int in 0 ..< Int(duration * _coef) {
             let _frame = self.getFrame(fromTime:Float64(Double(index) / _coef))
-            frames.append(_frame)
+//            frames.append(_frame)
+            if (_frame != nil) {
+                frames.append(cropToBoundsSquare(image: _frame!, rect: squareBounds))
+            }
         }
         self.generator = nil
         return frames
@@ -297,6 +301,30 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             let _coef = 6.5
             let _ycoef = 3.7
             let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _ycoef, width: rect!.width * _coef, height: rect!.height * _coef)
+            let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
+
+            let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
+            return _image
+        }
+        return image
+    }
+    
+    func cropToBoundsSquare(image: UIImage, rect: CGRect?) -> UIImage
+    {
+        if (rect != nil) {
+            let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+            
+            print("rect.minX = \(rect!.minX)\nrect.minY = \(rect!.minY)\nrect.width = \(rect!.width)\nrect.height = \(rect!.height)\n")
+            print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
+            print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
+
+            let screenRect = UIScreen.main.bounds
+            let screenWidth = screenRect.size.width
+            let screenHeight = screenRect.size.height
+            
+            let _coef = 720.0 / screenWidth
+            let _ycoef = 720 * 65.0 / 37.0 / screenHeight
+            let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _ycoef, width: rect!.width * _coef, height: rect!.height * _ycoef)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
 
             let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
