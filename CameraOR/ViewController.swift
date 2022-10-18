@@ -318,13 +318,13 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
             print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
 
-            let screenRect = UIScreen.main.bounds
-            let screenWidth = screenRect.size.width
-            let screenHeight = screenRect.size.height
+            let _xcoef = 0.75
+            let _ycoef = 0.75
             
-            let _coef = 720.0 / screenWidth
-            let _ycoef = 720 * 65.0 / 37.0 / screenHeight
-            let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _ycoef, width: rect!.width * _coef, height: rect!.height * _ycoef)
+            let _width = rect!.width * _xcoef
+            let _height = rect!.height * _ycoef
+                        
+            let _rect = CGRect(x: (CGFloat(image.cgImage!.width) - _width) / 2, y: (CGFloat(image.cgImage!.height) - _height) / 2, width: _width, height: _height)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
 
             let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
