@@ -248,7 +248,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             
             let cgImage = uiImage.cgImage
             let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
-            return objectBounds
+            let _bounds = CGRect(
+                x: objectBounds.minX,
+                y: CGFloat(cgImage!.height) - objectBounds.maxY,
+                width: objectBounds.width,
+                height: objectBounds.height
+            )
+            return _bounds
         }
         
         return nil
