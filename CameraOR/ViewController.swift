@@ -241,11 +241,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return nil
         }
         
-        for observation in results where observation is VNRecognizedObjectObservation {
-            guard let objectObservation = observation as? VNRecognizedObjectObservation else {
-                continue
-            }
-            
+        if !(results.isEmpty) {
+            let objectObservation = results[0]
             let cgImage = uiImage.cgImage
             let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
             let _bounds = CGRect(
