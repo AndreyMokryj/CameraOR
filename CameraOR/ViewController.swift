@@ -198,10 +198,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         for index:Int in 0 ..< Int(duration * _coef) {
             let _frame = self.getFrame(fromTime:Float64(Double(index) / _coef))
-//            frames.append(_frame)
-//            if (_frame != nil) {
-//                frames.append(cropToBoundsSquare(image: _frame!, rect: squareBounds))
-//            }
             if (_frame != nil) {
                 let _bounds = detectBounds(uiImage: _frame!)
                 let _croppedFrame = cropToImageBounds(image: _frame!, rect: _bounds)
@@ -266,22 +262,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 _images.append(el!)
             }
         }
-        
-//        let _count = _images.count
-//        let N = 12
-//
-//        /// 7 evenly-taken images
-//        let _coef = (Double(_count) - 1) / Double(N)
-//        var _newImages:[UIImage] = []
-//        for i in 0...N {
-//            _newImages.append(_images[Int(round(Double(i) * _coef))])
-//        }
-//        _newImages[0] = _images[1]
-//        _newImages[N] = _images[_count - 2]
-        
+
         do {
             print ("Before try stitch")
-//            let stitchedImage:UIImage? = try CVWrapper.process(with: _newImages)
             let stitchedImage:UIImage? = try CVWrapper.process(with: _images)
             print ("After try stitch")
             return stitchedImage

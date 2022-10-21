@@ -45,22 +45,6 @@ class ObjectRecognitionViewController: ViewController {
                 })
             })
             self.requests = [objectRecognition]
-            
-//            let objectDetection = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
-////                DispatchQueue.main.async(execute: {
-////                    // perform all the UI updates on the main queue
-////                    if let results = request.results {
-////                        self.drawVisionRequestResults(results)
-////                    }
-////                })
-//
-//                if let observation = request.results.first as VNRecognizedObjectObservation {
-//                    let cgImage = uiImage.cgImage
-//                    let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage.width), Int(cgImage.height))
-//
-//                }
-//            })
-//            self.detectionRequests = [objectDetection]
             self.detectionRequest = VNCoreMLRequest(model: visionModel)
         } catch let error as NSError {
             print("Model loading went wrong: \(error)")
@@ -153,7 +137,6 @@ class ObjectRecognitionViewController: ViewController {
         squareBounds = CGRect(
             x: squareOverlay.frame.minX,
             y: squareOverlay.frame.minY,
-//            y: detectionOverlay.frame.maxY - squareOverlay.frame.maxY * 1.0, // Move
             width: squareOverlay.frame.width,
             height: squareOverlay.frame.height
         )
