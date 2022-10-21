@@ -15,20 +15,24 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet var cameraButton: UIButton!
     
     var foundBounds: CGRect? = nil
+    var squareBounds: CGRect? = nil
     var coef: Double = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        hideSpinner()
         button.backgroundColor = .systemBlue
         button.setTitle("Open camera", for: .normal)
         button.setTitleColor(.white, for: .normal)
         
         cameraButton.backgroundColor = .white
         cameraButton.setTitle("", for: .normal)
+        cameraButton.removeFromSuperview()
     }
 
     @IBAction func didTapButton(){
+        AppUtility.lockOrientation(.portrait, andRotateTo: .portrait)
         setupAVCapture()
     }
     
@@ -39,6 +43,25 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         session.removeInput(deviceInput)
         session.removeOutput(videoDataOutput)
         session.removeOutput(photoOutput)
+                
+        AppUtility.lockOrientation(.all)
+        imageView.image = nil
+        showSpinner()
+        let _frames = getAllFrames()
+        var _framesNotNil:[UIImage] = []
+        for el in _frames {
+            if el != nil {
+                _framesNotNil.append(el!)
+            }
+        }
+        
+        print("After get frames")
+        Task {
+            let _stitched = await stitch(images: _framesNotNil)
+            hideSpinner()
+            self.imageView.image = _stitched
+            
+        }
     }
     
     var bufferSize: CGSize = .zero
@@ -152,6 +175,104 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         return exifOrientation
     }
+    
+    
+    /// Get  frames from video
+    var videoUrl:URL?
+    
+    private var generator:AVAssetImageGenerator!
+
+    func getAllFrames() -> [UIImage?] {
+        let asset:AVAsset = AVAsset(url:self.videoUrl!)
+        let duration:Float64 = CMTimeGetSeconds(asset.duration)
+        self.generator = AVAssetImageGenerator(asset:asset)
+        generator.requestedTimeToleranceBefore = .zero //Optional
+        generator.requestedTimeToleranceAfter = .zero //Optional
+        self.generator.appliesPreferredTrackTransform = true
+        var frames:[UIImage?] = []
+        
+        var _coef:Float64 = 5.0
+        if (duration < 3) {
+            _coef = 15.0 / duration
+        }
+        
+        for index:Int in 0 ..< Int(duration * _coef) {
+            let _frame = self.getFrame(fromTime:Float64(Double(index) / _coef))
+//            frames.append(_frame)
+            if (_frame != nil) {
+                frames.append(cropToBoundsSquare(image: _frame!, rect: squareBounds))
+            }
+        }
+        self.generator = nil
+        return frames
+    }
+
+    private func getFrame(fromTime:Float64) -> UIImage? {
+        let time:CMTime = CMTimeMakeWithSeconds(fromTime, preferredTimescale:600)
+        let image:CGImage
+        do {
+            try image = self.generator.copyCGImage(at:time, actualTime:nil)
+        } catch {
+            return nil
+        }
+        return UIImage(cgImage:image)
+    }
+    
+    /// Stitch frames
+    func stitch(images:[UIImage?]) -> UIImage? {
+        var _images:[UIImage] = []
+        for el in images {
+            if el != nil {
+                _images.append(el!)
+            }
+        }
+        
+        let _count = _images.count
+        let N = 12
+        
+        /// 7 evenly-taken images
+        let _coef = (Double(_count) - 1) / Double(N)
+        var _newImages:[UIImage] = []
+        for i in 0...N {
+            _newImages.append(_images[Int(round(Double(i) * _coef))])
+        }
+        _newImages[0] = _images[1]
+        _newImages[N] = _images[_count - 2]
+        
+        do {
+            print ("Before try stitch")
+//            let stitchedImage:UIImage? = try CVWrapper.process(with: _newImages)
+            let stitchedImage:UIImage? = try CVWrapper.process(with: _images)
+            print ("After try stitch")
+            return stitchedImage
+        } catch let error as NSError {
+            let alert = UIAlertController(title: "Stitching Error", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+           self.show(alert, sender: nil)
+        }
+        return nil
+    }
+    
+    /// Spinner
+    @IBOutlet weak var loadingView: UIView! {
+      didSet {
+        loadingView.layer.cornerRadius = 6
+      }
+    }
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var loadingLabel: UILabel!
+    
+    private func showSpinner() {
+        activityIndicator.startAnimating()
+        loadingView.isHidden = false
+    }
+
+    private func hideSpinner() {
+        activityIndicator.stopAnimating()
+        loadingView.isHidden = true
+    }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -180,6 +301,30 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             let _coef = 6.5
             let _ycoef = 3.7
             let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _ycoef, width: rect!.width * _coef, height: rect!.height * _coef)
+            let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
+
+            let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
+            return _image
+        }
+        return image
+    }
+    
+    func cropToBoundsSquare(image: UIImage, rect: CGRect?) -> UIImage
+    {
+        if (rect != nil) {
+            let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+            
+            print("rect.minX = \(rect!.minX)\nrect.minY = \(rect!.minY)\nrect.width = \(rect!.width)\nrect.height = \(rect!.height)\n")
+            print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
+            print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
+
+            let _xcoef = 0.75
+            let _ycoef = 0.75
+            
+            let _width = rect!.width * _xcoef
+            let _height = rect!.height * _ycoef
+                        
+            let _rect = CGRect(x: (CGFloat(image.cgImage!.width) - _width) / 2, y: (CGFloat(image.cgImage!.height) - _height) / 2, width: _width, height: _height)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
 
             let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)

@@ -20,6 +20,7 @@ class ObjectRecognitionViewController: ViewController {
     var isRecording: Bool = false
     
     private var detectionOverlay: CALayer! = nil
+    private var squareOverlay: CALayer! = nil
     
     
     // Vision parts
@@ -77,7 +78,7 @@ class ObjectRecognitionViewController: ViewController {
         self.updateLayerGeometry()
         CATransaction.commit()
     }
-    
+
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         sampleBufferGlobal = sampleBuffer
         writeVideoFromData()
@@ -109,8 +110,6 @@ class ObjectRecognitionViewController: ViewController {
         
         view.addSubview(cameraButton)
         view.bringSubviewToFront(cameraButton)
-        
-        setupAssetWriter()
     }
     
     func setupLayers() {
@@ -122,6 +121,25 @@ class ObjectRecognitionViewController: ViewController {
                                          height: bufferSize.height)
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
+        
+        squareOverlay = CALayer() // container layer that has all the renderings of the observations
+        squareOverlay.name = "SquareOverlay"
+        squareOverlay.bounds = CGRect(x: 0.0,
+                                         y: 0.0,
+                                         width: 250,
+                                         height: 250)
+        squareOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
+        squareOverlay.borderColor = UIColor.yellow.cgColor
+        squareOverlay.borderWidth = 2.0
+        rootLayer.addSublayer(squareOverlay)
+        
+        squareBounds = CGRect(
+            x: squareOverlay.frame.minX,
+            y: squareOverlay.frame.minY,
+//            y: detectionOverlay.frame.maxY - squareOverlay.frame.maxY * 1.0, // Move
+            width: squareOverlay.frame.width,
+            height: squareOverlay.frame.height
+        )
     }
 
     func updateLayerGeometry() {
@@ -182,16 +200,17 @@ class ObjectRecognitionViewController: ViewController {
         
     override func didTapCameraButton(){
         if (!isRecording) {
+            setupAssetWriter()
             cameraButton.backgroundColor = .red
         } else {
             cameraButton.backgroundColor = .white
             cameraButton.removeFromSuperview()
             detectionOverlay.removeFromSuperlayer()
+            squareOverlay.removeFromSuperlayer()
                 
-            super.didTapCameraButton()
+            
             stopAssetWriter()
-            let _frames = getAllFrames()
-            print("After get frames")
+            super.didTapCameraButton()
         }
         isRecording = !isRecording
     }
@@ -211,9 +230,13 @@ class ObjectRecognitionViewController: ViewController {
             print("File does not exist")
         }
 
+        let imageBuffer = CMSampleBufferGetImageBuffer(sampleBufferGlobal!);
+        let _width = CVPixelBufferGetWidth(imageBuffer!);
+        let _height = CVPixelBufferGetHeight(imageBuffer!);
+
         outputSettings = [AVVideoCodecKey   : AVVideoCodecType.h264,
-                             AVVideoWidthKey: 720 * 65.0 / 37.0,
-                            AVVideoHeightKey: 720]
+                             AVVideoWidthKey: _width,
+                            AVVideoHeightKey: _height]
 
         videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: outputSettings)
         videoWriterInput.expectsMediaDataInRealTime = true
@@ -256,38 +279,5 @@ class ObjectRecognitionViewController: ViewController {
                 })
             }
         })
-    }
-    
-    /// Get  frames from video
-    var videoUrl:URL?
-    
-    private var generator:AVAssetImageGenerator!
-
-    func getAllFrames() -> [UIImage?] {
-        let asset:AVAsset = AVAsset(url:self.videoUrl!)
-        let duration:Float64 = CMTimeGetSeconds(asset.duration)
-        self.generator = AVAssetImageGenerator(asset:asset)
-        generator.requestedTimeToleranceBefore = .zero //Optional
-        generator.requestedTimeToleranceAfter = .zero //Optional
-        self.generator.appliesPreferredTrackTransform = true
-        var frames:[UIImage?] = []
-        
-        for index:Int in 0 ..< Int(duration * 10) {
-            let _frame = self.getFrame(fromTime:Float64(Double(index) / 10.0))
-            frames.append(_frame)
-        }
-        self.generator = nil
-        return frames
-    }
-
-    private func getFrame(fromTime:Float64) -> UIImage? {
-        let time:CMTime = CMTimeMakeWithSeconds(fromTime, preferredTimescale:600)
-        let image:CGImage
-        do {
-            try image = self.generator.copyCGImage(at:time, actualTime:nil)
-        } catch {
-            return nil
-        }
-        return UIImage(cgImage:image)
     }
 }
