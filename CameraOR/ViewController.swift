@@ -15,7 +15,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet var cameraButton: UIButton!
     
     var foundBounds: CGRect? = nil
-    var squareBounds: CGRect? = nil
     var coef: Double = 0
 
     override func viewDidLoad() {
@@ -350,30 +349,6 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             return _image
         }
         return nil
-    }
-    
-    func cropToBoundsSquare(image: UIImage, rect: CGRect?) -> UIImage
-    {
-        if (rect != nil) {
-            let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
-            
-            print("rect.minX = \(rect!.minX)\nrect.minY = \(rect!.minY)\nrect.width = \(rect!.width)\nrect.height = \(rect!.height)\n")
-            print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
-            print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
-
-            let _xcoef = 0.75
-            let _ycoef = 0.75
-            
-            let _width = rect!.width * _xcoef
-            let _height = rect!.height * _ycoef
-                        
-            let _rect = CGRect(x: (CGFloat(image.cgImage!.width) - _width) / 2, y: (CGFloat(image.cgImage!.height) - _height) / 2, width: _width, height: _height)
-            let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
-
-            let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
-            return _image
-        }
-        return image
     }
 }
 
