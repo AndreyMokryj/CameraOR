@@ -15,7 +15,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet var cameraButton: UIButton!
     
     var foundBounds: CGRect? = nil
-    var squareBounds: CGRect? = nil
     var coef: Double = 0
 
     override func viewDidLoad() {
@@ -198,9 +197,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         for index:Int in 0 ..< Int(duration * _coef) {
             let _frame = self.getFrame(fromTime:Float64(Double(index) / _coef))
-//            frames.append(_frame)
             if (_frame != nil) {
-                frames.append(cropToBoundsSquare(image: _frame!, rect: squareBounds))
+                let _bounds = detectBounds(uiImage: _frame!)
+                let _croppedFrame = cropToImageBounds(image: _frame!, rect: _bounds)
+                if (_croppedFrame != nil) {
+                    frames.append(_croppedFrame)
+                }
             }
         }
         self.generator = nil
@@ -218,6 +220,39 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         return UIImage(cgImage:image)
     }
     
+    ///Detect object on images
+    var detectionFrames:[UIImage?] = []
+    var detectionRequests = [VNRequest]()
+    var detectionRequest:VNCoreMLRequest?
+    
+    func detectBounds(uiImage: UIImage) -> CGRect? {
+        guard let ciImage = CIImage(image: uiImage) else { return nil }
+        
+        let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
+        
+        try? handler.perform([detectionRequest!])
+        
+        guard let results = detectionRequest?.results as? [VNRecognizedObjectObservation] else {
+            return nil
+        }
+        
+        if !(results.isEmpty) {
+            let objectObservation = results[0]
+            let cgImage = uiImage.cgImage
+            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
+            let _bounds = CGRect(
+                x: objectBounds.minX,
+                y: CGFloat(cgImage!.height) - objectBounds.maxY,
+                width: objectBounds.width,
+                height: objectBounds.height
+            )
+            return _bounds
+        }
+        
+        return nil
+    }
+    
+    
     /// Stitch frames
     func stitch(images:[UIImage?]) -> UIImage? {
         var _images:[UIImage] = []
@@ -226,22 +261,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 _images.append(el!)
             }
         }
-        
-        let _count = _images.count
-        let N = 12
-        
-        /// 7 evenly-taken images
-        let _coef = (Double(_count) - 1) / Double(N)
-        var _newImages:[UIImage] = []
-        for i in 0...N {
-            _newImages.append(_images[Int(round(Double(i) * _coef))])
-        }
-        _newImages[0] = _images[1]
-        _newImages[N] = _images[_count - 2]
-        
+
         do {
             print ("Before try stitch")
-//            let stitchedImage:UIImage? = try CVWrapper.process(with: _newImages)
             let stitchedImage:UIImage? = try CVWrapper.process(with: _images)
             print ("After try stitch")
             return stitchedImage
@@ -309,7 +331,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         return image
     }
     
-    func cropToBoundsSquare(image: UIImage, rect: CGRect?) -> UIImage
+    func cropToImageBounds(image: UIImage, rect: CGRect?) -> UIImage?
     {
         if (rect != nil) {
             let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
@@ -318,19 +340,15 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
             print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
 
-            let _xcoef = 0.75
-            let _ycoef = 0.75
-            
-            let _width = rect!.width * _xcoef
-            let _height = rect!.height * _ycoef
-                        
-            let _rect = CGRect(x: (CGFloat(image.cgImage!.width) - _width) / 2, y: (CGFloat(image.cgImage!.height) - _height) / 2, width: _width, height: _height)
+            let _height = min(160, rect!.height)
+//            let _rect = CGRect(x: rect!.minX, y: rect!.midY - _height / 2.0, width: rect!.width, height: _height)
+            let _rect = CGRect(x: rect!.minX + 10, y: rect!.midY - _height / 2.0, width: rect!.width - 20, height: _height)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
 
             let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
             return _image
         }
-        return image
+        return nil
     }
 }
 

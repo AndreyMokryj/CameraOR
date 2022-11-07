@@ -20,8 +20,6 @@ class ObjectRecognitionViewController: ViewController {
     var isRecording: Bool = false
     
     private var detectionOverlay: CALayer! = nil
-    private var squareOverlay: CALayer! = nil
-    
     
     // Vision parts
     private var requests = [VNRequest]()
@@ -45,6 +43,7 @@ class ObjectRecognitionViewController: ViewController {
                 })
             })
             self.requests = [objectRecognition]
+            self.detectionRequest = VNCoreMLRequest(model: visionModel)
         } catch let error as NSError {
             print("Model loading went wrong: \(error)")
         }
@@ -121,25 +120,6 @@ class ObjectRecognitionViewController: ViewController {
                                          height: bufferSize.height)
         detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
-        
-        squareOverlay = CALayer() // container layer that has all the renderings of the observations
-        squareOverlay.name = "SquareOverlay"
-        squareOverlay.bounds = CGRect(x: 0.0,
-                                         y: 0.0,
-                                         width: 250,
-                                         height: 250)
-        squareOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
-        squareOverlay.borderColor = UIColor.yellow.cgColor
-        squareOverlay.borderWidth = 2.0
-        rootLayer.addSublayer(squareOverlay)
-        
-        squareBounds = CGRect(
-            x: squareOverlay.frame.minX,
-            y: squareOverlay.frame.minY,
-//            y: detectionOverlay.frame.maxY - squareOverlay.frame.maxY * 1.0, // Move
-            width: squareOverlay.frame.width,
-            height: squareOverlay.frame.height
-        )
     }
 
     func updateLayerGeometry() {
@@ -206,9 +186,6 @@ class ObjectRecognitionViewController: ViewController {
             cameraButton.backgroundColor = .white
             cameraButton.removeFromSuperview()
             detectionOverlay.removeFromSuperlayer()
-            squareOverlay.removeFromSuperlayer()
-                
-            
             stopAssetWriter()
             super.didTapCameraButton()
         }
