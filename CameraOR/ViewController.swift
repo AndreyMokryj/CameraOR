@@ -227,29 +227,63 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func detectBounds(uiImage: UIImage) -> CGRect? {
         guard let ciImage = CIImage(image: uiImage) else { return nil }
+        var _points:[[String:Float]]? = nil
         
-        let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
+        _points = locatePoints(image: uiImage)
+        if (_points == nil) {
+            createAccessToken()
+            _points = locatePoints(image: uiImage)
+        }
         
-        try? handler.perform([detectionRequest!])
-        
-        guard let results = detectionRequest?.results as? [VNRecognizedObjectObservation] else {
+        if (_points == nil) {
             return nil
         }
         
-        if !(results.isEmpty) {
-            let objectObservation = results[0]
-            let cgImage = uiImage.cgImage
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
-            let _bounds = CGRect(
-                x: objectBounds.minX,
-                y: CGFloat(cgImage!.height) - objectBounds.maxY,
-                width: objectBounds.width,
-                height: objectBounds.height
-            )
-            return _bounds
+        var minX:Float = 1.0
+        var minY:Float = 1.0
+        var maxX:Float = 0.0
+        var maxY:Float = 0.0
+        for _point in _points! {
+            if (_point["x"]! < minX) {
+                minX = _point["x"]!
+            }
+            if (_point["y"]! < minY) {
+                minY = _point["y"]!
+            }
+            if (_point["x"]! > maxX) {
+                maxX = _point["x"]!
+            }
+            if (_point["y"]! > maxY) {
+                maxY = _point["y"]!
+            }
         }
         
-        return nil
+        let cgImage = uiImage.cgImage!
+        let _boundingBox = CGRect(x: Int(minX * Float(cgImage.width)), y: Int(minY * Float(cgImage.height)), width: Int((maxX - minX) * Float(cgImage.width)), height: Int((maxY - minY) * Float(cgImage.height)))
+        return _boundingBox
+        
+//        let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
+//
+//        try? handler.perform([detectionRequest!])
+//
+//        guard let results = detectionRequest?.results as? [VNRecognizedObjectObservation] else {
+//            return nil
+//        }
+//
+//        if !(results.isEmpty) {
+//            let objectObservation = results[0]
+//            let cgImage = uiImage.cgImage
+//            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
+//            let _bounds = CGRect(
+//                x: objectBounds.minX,
+//                y: CGFloat(cgImage!.height) - objectBounds.maxY,
+//                width: objectBounds.width,
+//                height: objectBounds.height
+//            )
+//            return _bounds
+//        }
+        
+//        return nil
     }
     
     
