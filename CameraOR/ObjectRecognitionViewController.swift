@@ -8,7 +8,6 @@
 import UIKit
 import AVFoundation
 import Vision
-import ImageIO
 
 class ObjectRecognitionViewController: ViewController {
     var sampleBufferGlobal : CMSampleBuffer?
@@ -24,76 +23,139 @@ class ObjectRecognitionViewController: ViewController {
     // Vision parts
     private var requests = [VNRequest]()
     
-    @discardableResult
-    func setupVision() -> NSError? {
-        // Setup Vision parts
-        let error: NSError! = nil
-        
-        guard let modelURL = Bundle.main.url(forResource: "ObjectDetector", withExtension: "mlmodelc") else {
-            return NSError(domain: "VisionObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
-        }
-        do {
-            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: modelURL))
-            let objectRecognition = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
-                DispatchQueue.main.async(execute: {
-                    // perform all the UI updates on the main queue
-                    if let results = request.results {
-                        self.drawVisionRequestResults(results)
-                    }
-                })
-            })
-            self.requests = [objectRecognition]
-            self.detectionRequest = VNCoreMLRequest(model: visionModel)
-        } catch let error as NSError {
-            print("Model loading went wrong: \(error)")
-        }
-        
-        return error
-    }
+//    @discardableResult
+//    func setupVision() -> NSError? {
+//        // Setup Vision parts
+//        let error: NSError! = nil
+//
+////        guard let modelURL = Bundle.main.url(forResource: "ObjectDetector", withExtension: "mlmodelc") else {
+////            return NSError(domain: "VisionObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
+////        }
+//        do {
+////            let visionModel = try VNCoreMLModel(for: MLModel(contentsOf: modelURL))
+//            let objectRecognition = VNRequest(completionHandler: { (request, error) in
+//                print("Some text")
+//                DispatchQueue.main.async(execute: {
+//                    // perform all the UI updates on the main queue
+//                    if let results = request.results {
+//                        self.drawVisionRequestResults(results)
+//                    }
+//                })
+//            })
+//            self.requests = [objectRecognition]
+////            self.detectionRequest = VNCoreMLRequest(model: visionModel)
+//        } catch let error as NSError {
+//            print("Model loading went wrong: \(error)")
+//        }
+//
+//        return error
+//    }
     
-    func drawVisionRequestResults(_ results: [Any]) {
+//    func drawVisionRequestResults(_ results: [Any]) {
+//        CATransaction.begin()
+//        CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+//        foundBounds = nil
+//        detectionOverlay.sublayers = nil // remove all the old recognized objects
+//        for observation in results where observation is VNRecognizedObjectObservation {
+//            guard let objectObservation = observation as? VNRecognizedObjectObservation else {
+//                continue
+//            }
+//            // Select only the label with the highest confidence.
+//            let topLabelObservation = objectObservation.labels[0]
+//            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
+//
+//            let dotsLayer = self.createDotsLayerWithBounds(objectBounds)
+//            detectionOverlay.addSublayer(dotsLayer)
+//
+//            foundBounds = CGRect(
+//                x: dotsLayer.frame.minX,
+//                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.7, // Move
+//                width: dotsLayer.frame.width,
+//                height: dotsLayer.frame.height
+//            )
+//        }
+//        self.updateLayerGeometry()
+//        CATransaction.commit()
+//    }
+    
+    func drawNyckelResult(_ result: CGRect) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
         foundBounds = nil
         detectionOverlay.sublayers = nil // remove all the old recognized objects
-        for observation in results where observation is VNRecognizedObjectObservation {
-            guard let objectObservation = observation as? VNRecognizedObjectObservation else {
-                continue
-            }
-            // Select only the label with the highest confidence.
-            let topLabelObservation = objectObservation.labels[0]
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
-            
-            let dotsLayer = self.createDotsLayerWithBounds(objectBounds)
-            detectionOverlay.addSublayer(dotsLayer)
-            
-            foundBounds = CGRect(
-                x: dotsLayer.frame.minX,
-                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.7, // Move
-                width: dotsLayer.frame.width,
-                height: dotsLayer.frame.height
-            )
-        }
+//        for observation in results where observation is VNRecognizedObjectObservation {
+//            guard let objectObservation = observation as? VNRecognizedObjectObservation else {
+//                continue
+//            }
+//            // Select only the label with the highest confidence.
+//            let topLabelObservation = objectObservation.labels[0]
+//            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
+//
+//            let dotsLayer = self.createDotsLayerWithBounds(objectBounds)
+//            detectionOverlay.addSublayer(dotsLayer)
+//
+//            foundBounds = CGRect(
+//                x: dotsLayer.frame.minX,
+//                y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.7, // Move
+//                width: dotsLayer.frame.width,
+//                height: dotsLayer.frame.height
+//            )
+//        }
+        
+        let dotsLayer = self.createDotsLayerWithBounds(result)
+        detectionOverlay.addSublayer(dotsLayer)
+
+//        foundBounds = CGRect(
+//            x: dotsLayer.frame.minX,
+//            y: detectionOverlay.frame.maxY - dotsLayer.frame.maxY * 1.7, // Move
+//            width: dotsLayer.frame.width,
+//            height: dotsLayer.frame.height
+//        )
+        
         self.updateLayerGeometry()
         CATransaction.commit()
+        print("CATransaction commited")
     }
 
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         sampleBufferGlobal = sampleBuffer
         writeVideoFromData()
-        
+
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
         
+//        let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer)
+//        let uiImage = UIImage(data: pixelBuffer as! Data)
+        
         let exifOrientation = exifOrientationFromDeviceOrientation()
         
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: exifOrientation, options: [:])
-        do {
-            try imageRequestHandler.perform(self.requests)
-        } catch {
-            print(error)
+        let ciImageDepth            = CIImage(cvPixelBuffer: pixelBuffer)
+        let contextDepth:CIContext  = CIContext.init(options: nil)
+        let cgImageDepth:CGImage    = contextDepth.createCGImage(ciImageDepth, from: ciImageDepth.extent)!
+        let uiImageDepth:UIImage    = UIImage(cgImage: cgImageDepth, scale: 1, orientation: UIImage.Orientation.up)
+
+        
+//        let image = UIImage(ciImage: ciimage, scale: 1.0, orientation: exifOrientation)
+//        let result = detectBounds(uiImage: image)
+        let result = detectBounds(uiImage: uiImageDepth)
+        if (result != nil) {
+//            print("Nyckel Result")
+//            print("minX = \(result!.minX)")
+//            print("minY = \(result!.minY)")
+//            print("width = \(result!.width)")
+//            print("height = \(result!.height)")
+            drawNyckelResult(result!)
         }
+        
+//        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: exifOrientation, options: [:])
+//        do {
+//            try imageRequestHandler.perform(self.requests)
+//        } catch {
+//            print(error)
+//        }
+        
+        
     }
     
     override func setupAVCapture() {
@@ -102,7 +164,7 @@ class ObjectRecognitionViewController: ViewController {
         // setup Vision parts
         setupLayers()
         updateLayerGeometry()
-        setupVision()
+//        setupVision()
         
         // start the capture
         startCaptureSession()

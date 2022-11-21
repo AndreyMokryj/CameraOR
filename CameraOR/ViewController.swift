@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import Vision
+import ImageIO
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     @IBOutlet var imageView: UIImageView!
@@ -156,9 +157,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // print("frame dropped")
     }
     
-    public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+    public func exifOrientationFromDeviceOrientation() -> UIImage.Orientation {
         let curDeviceOrientation = UIDevice.current.orientation
-        let exifOrientation: CGImagePropertyOrientation
+        let exifOrientation: UIImage.Orientation
         
         switch curDeviceOrientation {
         case UIDeviceOrientation.portraitUpsideDown:  // Device oriented vertically, home button on the top
@@ -243,6 +244,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         var minY:Float = 1.0
         var maxX:Float = 0.0
         var maxY:Float = 0.0
+        print("Number of points: \(_points?.count)")
         for _point in _points! {
             if (_point["x"]! < minX) {
                 minX = _point["x"]!
@@ -260,6 +262,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         let cgImage = uiImage.cgImage!
         let _boundingBox = CGRect(x: Int(minX * Float(cgImage.width)), y: Int(minY * Float(cgImage.height)), width: Int((maxX - minX) * Float(cgImage.width)), height: Int((maxY - minY) * Float(cgImage.height)))
+        
+        print("_boundingBox")
+        print("minX = \(_boundingBox.minX)")
+        print("minY = \(_boundingBox.minY)")
+        print("width = \(_boundingBox.width)")
+        print("height = \(_boundingBox.height)")
         return _boundingBox
         
 //        let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
