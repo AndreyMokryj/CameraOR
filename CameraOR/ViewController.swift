@@ -361,7 +361,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
             print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
 
-            let _height = min(160, rect!.height)
+            let _height = min(250, rect!.height)
 //            let _rect = CGRect(x: rect!.minX, y: rect!.midY - _height / 2.0, width: rect!.width, height: _height)
             let _rect = CGRect(x: rect!.minX + 10, y: rect!.midY - _height / 2.0, width: rect!.width - 20, height: _height)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
@@ -382,7 +382,7 @@ extension ViewController: AVCapturePhotoCaptureDelegate {
             if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
 
                 if let image = UIImage(data: dataImage) {
-                    self.imageView.image = cropToBounds(image: image, rect: foundBounds)
+//                    self.imageView.image = cropToBounds(image: image, rect: foundBounds)
                 }
             }
         }
@@ -395,6 +395,6 @@ extension ViewController: AVCapturePhotoCaptureDelegate {
                 return
         }
 
-        self.imageView.image = cropToBounds(image: image, rect: foundBounds)
+//        self.imageView.image = cropToBounds(image: image, rect: foundBounds)
     }
 }
