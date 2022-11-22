@@ -133,7 +133,7 @@ class ObjectRecognitionViewController: ViewController {
         let ciImageDepth            = CIImage(cvPixelBuffer: pixelBuffer)
         let contextDepth:CIContext  = CIContext.init(options: nil)
         let cgImageDepth:CGImage    = contextDepth.createCGImage(ciImageDepth, from: ciImageDepth.extent)!
-        let uiImageDepth:UIImage    = UIImage(cgImage: cgImageDepth, scale: 1, orientation: UIImage.Orientation.up)
+        let uiImageDepth:UIImage    = UIImage(cgImage: cgImageDepth, scale: 1.0, orientation: exifOrientation)
 
         
 //        let image = UIImage(ciImage: ciimage, scale: 1.0, orientation: exifOrientation)
@@ -154,7 +154,6 @@ class ObjectRecognitionViewController: ViewController {
 //        } catch {
 //            print(error)
 //        }
-        
         
     }
     

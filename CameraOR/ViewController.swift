@@ -228,7 +228,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func detectBounds(uiImage: UIImage) -> CGRect? {
         guard let ciImage = CIImage(image: uiImage) else { return nil }
-        var _points:[[String:Float]]? = nil
+        var _points:[[String:NSNumber]]? = nil
         
         _points = locatePoints(image: uiImage)
         if (_points == nil) {
@@ -244,19 +244,21 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         var minY:Float = 1.0
         var maxX:Float = 0.0
         var maxY:Float = 0.0
-        print("Number of points: \(_points?.count)")
+        print("Number of points: \(_points!.count)")
         for _point in _points! {
-            if (_point["x"]! < minX) {
-                minX = _point["x"]!
+            let x = Float(truncating: _point["x"]!)
+            let y = Float(truncating: _point["y"]!)
+            if (x < minX) {
+                minX = x
             }
-            if (_point["y"]! < minY) {
-                minY = _point["y"]!
+            if (y < minY) {
+                minY = y
             }
-            if (_point["x"]! > maxX) {
-                maxX = _point["x"]!
+            if (x > maxX) {
+                maxX = x
             }
-            if (_point["y"]! > maxY) {
-                maxY = _point["y"]!
+            if (y > maxY) {
+                maxY = y
             }
         }
         

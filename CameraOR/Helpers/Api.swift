@@ -30,12 +30,35 @@ func createAccessToken() -> String? {
     ]
     request.httpBody = parameters.percentEncoded()
     
+//    var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+//    components.queryItems = [
+//        URLQueryItem(name: "client_id", value: clientId),
+//        URLQueryItem(name: "client_secret", value: clientSecret),
+//        URLQueryItem(name: "grant_type", value: "client_credentials")
+//    ]
+//
+//    let query = components.url!.query
+//    request.httpBody = Data(query!.utf8)
+//    request.httpBody = Data(query!.utf8)
+    
     var done = false
-    let task = URLSession.shared.dataTask(with: url) { data, response, error in
-        if let data = data {
-            if let data = try? JSONDecoder().decode(ResponseObject<CreateTokenResponse>.self, from: data) {
-                print(data.form.access_token)
-                accessToken = data.form.access_token
+    let task = URLSession.shared.dataTask(with: request) { responseData, response, error in
+//        if let data = data {
+//            if let data = try? JSONDecoder().decode(ResponseObject<CreateTokenResponse>.self, from: data) {
+//                print("Received token: " + data.form.access_token)
+//                accessToken = data.form.access_token
+//            } else {
+//                print("Invalid Response")
+//            }
+//        } else if let error = error {
+//            print("HTTP Request Failed \(error)")
+//        }
+        if error == nil {
+            let jsonData = try? JSONSerialization.jsonObject(with: responseData!, options: .allowFragments)
+            if let json = jsonData as? [String: Any] {
+                print("Received json: \(json)")
+                print("Received token: \(json["access_token"])")
+                accessToken = json["access_token"] as? String
             } else {
                 print("Invalid Response")
             }
@@ -52,8 +75,8 @@ func createAccessToken() -> String? {
     return accessToken
 }
 
-func locatePoints(image: UIImage) -> [[String:Float]]? {
-    var _points:[[String:Float]]? = []
+func locatePoints(image: UIImage) -> [[String:NSNumber]]? {
+    var _points:[[String:NSNumber]]? = nil
     
     let boundary = UUID().uuidString
     let paramName = "data"
@@ -79,7 +102,7 @@ func locatePoints(image: UIImage) -> [[String:Float]]? {
     request.httpBody = data
     
     var done = false
-    let task = URLSession.shared.dataTask(with: url) { responseData, response, error in
+    let task = URLSession.shared.dataTask(with: request) { responseData, response, error in
         if error == nil {
 //            if let data = try? JSONDecoder().decode(ResponseObject<CreateTokenResponse>.self, from: data) {
 //                print(data.form.access_token)
@@ -90,10 +113,10 @@ func locatePoints(image: UIImage) -> [[String:Float]]? {
             
             let jsonData = try? JSONSerialization.jsonObject(with: responseData!, options: .allowFragments)
             if let json = jsonData as? [[String: Any]] {
-                print(json)
+                print("Received JSON: \(json)")
                 
                 /// TODO: Extract points
-                _points = json[0]["points"] as! [[String:Float]]
+                _points = json[0]["points"] as! [[String:NSNumber]]?
             }
         } else if let error = error {
             print("HTTP Request Failed \(error)")
