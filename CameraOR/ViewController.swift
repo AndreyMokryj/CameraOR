@@ -271,29 +271,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         print("width = \(_boundingBox.width)")
         print("height = \(_boundingBox.height)")
         return _boundingBox
-        
-//        let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
-//
-//        try? handler.perform([detectionRequest!])
-//
-//        guard let results = detectionRequest?.results as? [VNRecognizedObjectObservation] else {
-//            return nil
-//        }
-//
-//        if !(results.isEmpty) {
-//            let objectObservation = results[0]
-//            let cgImage = uiImage.cgImage
-//            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
-//            let _bounds = CGRect(
-//                x: objectBounds.minX,
-//                y: CGFloat(cgImage!.height) - objectBounds.maxY,
-//                width: objectBounds.width,
-//                height: objectBounds.height
-//            )
-//            return _bounds
-//        }
-        
-//        return nil
     }
     
     

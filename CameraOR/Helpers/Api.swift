@@ -29,30 +29,9 @@ func createAccessToken() -> String? {
         "grant_type": "client_credentials"
     ]
     request.httpBody = parameters.percentEncoded()
-    
-//    var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-//    components.queryItems = [
-//        URLQueryItem(name: "client_id", value: clientId),
-//        URLQueryItem(name: "client_secret", value: clientSecret),
-//        URLQueryItem(name: "grant_type", value: "client_credentials")
-//    ]
-//
-//    let query = components.url!.query
-//    request.httpBody = Data(query!.utf8)
-//    request.httpBody = Data(query!.utf8)
-    
+
     var done = false
     let task = URLSession.shared.dataTask(with: request) { responseData, response, error in
-//        if let data = data {
-//            if let data = try? JSONDecoder().decode(ResponseObject<CreateTokenResponse>.self, from: data) {
-//                print("Received token: " + data.form.access_token)
-//                accessToken = data.form.access_token
-//            } else {
-//                print("Invalid Response")
-//            }
-//        } else if let error = error {
-//            print("HTTP Request Failed \(error)")
-//        }
         if error == nil {
             let jsonData = try? JSONSerialization.jsonObject(with: responseData!, options: .allowFragments)
             if let json = jsonData as? [String: Any] {
@@ -104,18 +83,9 @@ func locatePoints(image: UIImage) -> [[String:NSNumber]]? {
     var done = false
     let task = URLSession.shared.dataTask(with: request) { responseData, response, error in
         if error == nil {
-//            if let data = try? JSONDecoder().decode(ResponseObject<CreateTokenResponse>.self, from: data) {
-//                print(data.form.access_token)
-//                accessToken = data.form.access_token
-//            } else {
-//                print("Invalid Response")
-//            }
-            
             let jsonData = try? JSONSerialization.jsonObject(with: responseData!, options: .allowFragments)
             if let json = jsonData as? [[String: Any]] {
                 print("Received JSON: \(json)")
-                
-                /// TODO: Extract points
                 _points = json[0]["points"] as! [[String:NSNumber]]?
             }
         } else if let error = error {
@@ -154,20 +124,4 @@ extension CharacterSet {
         allowed.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
         return allowed
     }()
-}
-
-struct ResponseObject<T: Decodable>: Decodable {
-    let form: T    // often the top level key is `data`, but in the case of https://httpbin.org, it echos the submission under the key `form`
-}
-
-struct CreateTokenResponse: Decodable {
-    let access_token: String
-    let token_type: String
-    let expires_in: Int64
-}
-
-struct LocatedPoint: Decodable {
-    let x: Float
-    let y: Float
-    let confidence: Float
 }
