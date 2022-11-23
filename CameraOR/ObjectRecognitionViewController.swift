@@ -21,12 +21,9 @@ class ObjectRecognitionViewController: ViewController {
     private var detectionOverlay: CALayer! = nil
     
     // Vision parts
-    private var requests = [VNRequest]()
-    
     func drawNyckelResult(_ result: CGRect) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-        foundBounds = nil
         detectionOverlay.sublayers = nil // remove all the old recognized objects
         
         let dotsLayer = self.createDotsLayerWithBounds(result)
