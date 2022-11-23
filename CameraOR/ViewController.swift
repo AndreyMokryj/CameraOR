@@ -8,15 +8,13 @@
 import UIKit
 import AVFoundation
 import Vision
+import ImageIO
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var button: UIButton!
     @IBOutlet var cameraButton: UIButton!
     
-    var foundBounds: CGRect? = nil
-    var coef: Double = 0
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -156,9 +154,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // print("frame dropped")
     }
     
-    public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+    public func exifOrientationFromDeviceOrientation() -> UIImage.Orientation {
         let curDeviceOrientation = UIDevice.current.orientation
-        let exifOrientation: CGImagePropertyOrientation
+        let exifOrientation: UIImage.Orientation
         
         switch curDeviceOrientation {
         case UIDeviceOrientation.portraitUpsideDown:  // Device oriented vertically, home button on the top
@@ -222,34 +220,52 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     ///Detect object on images
     var detectionFrames:[UIImage?] = []
-    var detectionRequests = [VNRequest]()
-    var detectionRequest:VNCoreMLRequest?
     
     func detectBounds(uiImage: UIImage) -> CGRect? {
         guard let ciImage = CIImage(image: uiImage) else { return nil }
+        var _points:[[String:NSNumber]]? = nil
         
-        let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
+        _points = locatePoints(image: uiImage)
+        if (_points == nil) {
+            createAccessToken()
+            _points = locatePoints(image: uiImage)
+        }
         
-        try? handler.perform([detectionRequest!])
-        
-        guard let results = detectionRequest?.results as? [VNRecognizedObjectObservation] else {
+        if (_points == nil) {
             return nil
         }
         
-        if !(results.isEmpty) {
-            let objectObservation = results[0]
-            let cgImage = uiImage.cgImage
-            let objectBounds = VNImageRectForNormalizedRect(objectObservation.boundingBox, Int(cgImage!.width), Int(cgImage!.height))
-            let _bounds = CGRect(
-                x: objectBounds.minX,
-                y: CGFloat(cgImage!.height) - objectBounds.maxY,
-                width: objectBounds.width,
-                height: objectBounds.height
-            )
-            return _bounds
+        var minX:Float = 1.0
+        var minY:Float = 1.0
+        var maxX:Float = 0.0
+        var maxY:Float = 0.0
+        print("Number of points: \(_points!.count)")
+        for _point in _points! {
+            let x = Float(truncating: _point["x"]!)
+            let y = Float(truncating: _point["y"]!)
+            if (x < minX) {
+                minX = x
+            }
+            if (y < minY) {
+                minY = y
+            }
+            if (x > maxX) {
+                maxX = x
+            }
+            if (y > maxY) {
+                maxY = y
+            }
         }
         
-        return nil
+        let cgImage = uiImage.cgImage!
+        let _boundingBox = CGRect(x: Int(minX * Float(cgImage.width)), y: Int(minY * Float(cgImage.height)), width: Int((maxX - minX) * Float(cgImage.width)), height: Int((maxY - minY) * Float(cgImage.height)))
+        
+        print("_boundingBox")
+        print("minX = \(_boundingBox.minX)")
+        print("minY = \(_boundingBox.minY)")
+        print("width = \(_boundingBox.width)")
+        print("height = \(_boundingBox.height)")
+        return _boundingBox
     }
     
     
@@ -311,26 +327,6 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         imageView.image = image
     }
     
-    func cropToBounds(image: UIImage, rect: CGRect?) -> UIImage
-    {
-        if (rect != nil) {
-            let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
-            
-            print("rect.minX = \(rect!.minX)\nrect.minY = \(rect!.minY)\nrect.width = \(rect!.width)\nrect.height = \(rect!.height)\n")
-            print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
-            print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
-
-            let _coef = 6.5
-            let _ycoef = 3.7
-            let _rect = CGRect(x: rect!.minX * _coef, y: rect!.minY * _ycoef, width: rect!.width * _coef, height: rect!.height * _coef)
-            let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
-
-            let _image: UIImage = UIImage(cgImage: imageRef, scale: image.imageRendererFormat.scale, orientation: image.imageOrientation)
-            return _image
-        }
-        return image
-    }
-    
     func cropToImageBounds(image: UIImage, rect: CGRect?) -> UIImage?
     {
         if (rect != nil) {
@@ -340,7 +336,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             print("rect.midX = \(rect!.midX)\nrect.midY = \(rect!.midY)\n")
             print("rect.maxX = \(rect!.maxX)\nrect.maxY = \(rect!.maxY)\n")
 
-            let _height = min(160, rect!.height)
+            let _height = min(250, rect!.height)
 //            let _rect = CGRect(x: rect!.minX, y: rect!.midY - _height / 2.0, width: rect!.width, height: _height)
             let _rect = CGRect(x: rect!.minX + 10, y: rect!.midY - _height / 2.0, width: rect!.width - 20, height: _height)
             let imageRef: CGImage = contextImage.cgImage!.cropping(to: _rect)!
@@ -349,31 +345,5 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
             return _image
         }
         return nil
-    }
-}
-
-extension ViewController: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-
-        if let error = error {
-            print("Error capturing photo: \(error)")
-        } else {
-            if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
-
-                if let image = UIImage(data: dataImage) {
-                    self.imageView.image = cropToBounds(image: image, rect: foundBounds)
-                }
-            }
-        }
-    }
-
-    @available(iOS 11.0, *)
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        guard let data = photo.fileDataRepresentation(),
-              let image =  UIImage(data: data)  else {
-                return
-        }
-
-        self.imageView.image = cropToBounds(image: image, rect: foundBounds)
     }
 }

@@ -14,6 +14,7 @@
 		496FB09C28F0466D0072DC75 /* UIImage+Rotate.m in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09628F0466D0072DC75 /* UIImage+Rotate.m */; };
 		496FB09D28F0466D0072DC75 /* CVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09928F0466D0072DC75 /* CVWrapper.mm */; };
 		496FB0A028F84D830072DC75 /* AppUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496FB09F28F84D820072DC75 /* AppUtility.swift */; };
+		4988462C291BAB150028EF32 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4988462B291BAB150028EF32 /* Api.swift */; };
 		49947DB628A4089100518099 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DB528A4089100518099 /* AppDelegate.swift */; };
 		49947DB828A4089100518099 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DB728A4089100518099 /* SceneDelegate.swift */; };
 		49947DBA28A4089100518099 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49947DB928A4089100518099 /* ViewController.swift */; };
@@ -41,6 +42,7 @@
 		496FB09828F0466D0072DC75 /* UIImage+Rotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotate.h"; sourceTree = "<group>"; };
 		496FB09928F0466D0072DC75 /* CVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CVWrapper.mm; sourceTree = "<group>"; };
 		496FB09F28F84D820072DC75 /* AppUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUtility.swift; sourceTree = "<group>"; };
+		4988462B291BAB150028EF32 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
 		49947DB228A4089100518099 /* CameraOR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraOR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49947DB528A4089100518099 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49947DB728A4089100518099 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 			children = (
 				496FB06D28E5F4260072DC75 /* Device.swift */,
 				496FB09F28F84D820072DC75 /* AppUtility.swift */,
+				4988462B291BAB150028EF32 /* Api.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				496FB06B28E5F37D0072DC75 /* VideoService.swift in Sources */,
 				49947DB628A4089100518099 /* AppDelegate.swift in Sources */,
 				49947DB828A4089100518099 /* SceneDelegate.swift in Sources */,
+				4988462C291BAB150028EF32 /* Api.swift in Sources */,
 				49947DCA28A4F28A00518099 /* ObjectRecognitionViewController.swift in Sources */,
 				496FB06E28E5F4260072DC75 /* Device.swift in Sources */,
 				496FB0A028F84D830072DC75 /* AppUtility.swift in Sources */,
